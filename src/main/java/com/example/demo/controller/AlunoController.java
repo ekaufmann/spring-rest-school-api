@@ -17,25 +17,28 @@ public class AlunoController {
 
     @Autowired
     private AlunoService alunoService;
-    
+
     @GetMapping
-    public ResponseEntity<List<Aluno>> getAlunos() {
-        return new ResponseEntity<List<Aluno>>(alunoService.getAlunos(), HttpStatus.ACCEPTED);
+    public ResponseEntity<List<AlunoDTO>> getAlunos() {
+        return new ResponseEntity<List<AlunoDTO>>(alunoService.getAlunos(), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Aluno> getAluno(@PathVariable Long id) {
-        return ResponseEntity.ok(alunoService.getAlunoById(id));
+    public ResponseEntity<AlunoDTO> getAluno(@PathVariable Long id) {
+        return ResponseEntity.ok(alunoService.getAluno(id));
     }
 
     @PostMapping
-    public ResponseEntity<Boolean> criaAluno(@RequestBody AlunoDTO dto) {
-        long id = alunoService.criaAluno(dto);
-        return ResponseEntity.created(URI.create("/aluno/" + id)).build(); //retorna o caminho para acesso ao objeto criado
+    public ResponseEntity<AlunoDTO> criaAluno(@RequestBody AlunoDTO dto) {
+        AlunoDTO dtoResponse = alunoService.criaAluno(dto);
+        Long id = dtoResponse.getId();
+
+        return ResponseEntity.created(URI.create("/aluno/" + id)).body(dtoResponse);
     }
 
     @DeleteMapping("{id}")
-    public void deleteAluno(@PathVariable Long id) {
-        alunoService.deleteAluno(id);
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public ResponseEntity<AlunoDTO> deleteAluno(@PathVariable Long id) {
+        return ResponseEntity.ok(alunoService.deleteAluno(id));
     }
 }

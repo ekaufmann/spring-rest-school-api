@@ -17,11 +17,7 @@ public abstract class Pessoa {
     @Column(nullable = false, length = 128)
     protected String nome;
 
-    @Column(length = 64)
-    protected String classe;
-
-    public Pessoa(String nome, String classe) {
+    public Pessoa(String nome) {
         this.nome = nome;
-        this.classe = classe;
     }
 }

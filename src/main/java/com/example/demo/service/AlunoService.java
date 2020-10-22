@@ -2,11 +2,16 @@ package com.example.demo.service;
 
 import com.example.demo.dto.AlunoDTO;
 import com.example.demo.model.Aluno;
+import com.example.demo.model.Mentor;
 import com.example.demo.repository.AlunoRepository;
+import com.example.demo.util.DTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.example.demo.util.DTOConverter.*;
 
 @Service
 public class AlunoService {
@@ -17,22 +22,33 @@ public class AlunoService {
     @Autowired
     MentorService mentorService;
 
-    public List<Aluno> getAlunos() {
-        return alunoRepository.findAll();
+    public List<AlunoDTO> getAlunos() {
+        List<Aluno> alunos = alunoRepository.findAll();
+        return alunos.stream().map(DTOConverter::convertAlunoToDTO).collect(Collectors.toList());
     }
 
-    public Aluno getAlunoById(Long id) { return alunoRepository.findById(id).orElse(null); }
+    private Aluno getAlunoById(Long id) {
+        return alunoRepository.findById(id).orElse(null);
+    }
 
-    public long criaAluno(AlunoDTO dto) {
-        Aluno aluno = new Aluno(dto.getNome(), dto.getClasse(), mentorService.getMentorById(dto.getMentorId()));
+    public AlunoDTO getAluno(Long id) {
+        return convertAlunoToDTO(getAlunoById(id));
+    }
+
+    public AlunoDTO criaAluno(AlunoDTO dto) {
+        Mentor mentor = mentorService.getMentorById(dto.getMentorId());
+        Aluno aluno = new Aluno(dto.getNome(), dto.getClasse(), mentor);
         alunoRepository.save(aluno);
-        return aluno.getId();
+
+        return convertAlunoToDTO(aluno);
     }
 
-    public void deleteAluno(Long id) {
+    public AlunoDTO deleteAluno(Long id) {
         Aluno aluno = getAlunoById(id);
         if(aluno != null) {
             alunoRepository.delete(aluno);
         }
+        return convertAlunoToDTO(aluno);
     }
+
 }
