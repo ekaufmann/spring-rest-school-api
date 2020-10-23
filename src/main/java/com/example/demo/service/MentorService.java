@@ -3,15 +3,16 @@ package com.example.demo.service;
 import com.example.demo.dto.MentorDTO;
 import com.example.demo.model.Mentor;
 import com.example.demo.repository.MentorRepository;
-import com.example.demo.util.DTOConverter;
+import com.example.demo.mapper.MentorMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.demo.util.DTOConverter.convertMentorToDTO;
+import static com.example.demo.mapper.MentorMapper.convertMentorToDTO;
 
+// TODO Mudar retornos para Optional<>
 @Service
 public class MentorService {
 
@@ -20,8 +21,8 @@ public class MentorService {
 
     public List<MentorDTO> getMentores() {
         return mentorRepository.findAll()
-                .stream()
-                .map(DTOConverter::convertMentorToDTO)
+                .parallelStream()
+                .map(MentorMapper::convertMentorToDTO)
                 .collect(Collectors.toList());
     }
 

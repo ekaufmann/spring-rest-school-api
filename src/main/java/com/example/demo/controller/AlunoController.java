@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/aluno")
@@ -24,7 +25,9 @@ public class AlunoController {
 
     @GetMapping("{id}")
     public ResponseEntity<AlunoDTO> getAluno(@PathVariable Long id) {
-        return ResponseEntity.ok(alunoService.getAluno(id));
+        Optional<AlunoDTO> dto = alunoService.getAluno(id);
+
+        return dto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -37,15 +40,15 @@ public class AlunoController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<AlunoDTO> deleteAluno(@PathVariable Long id) {
-        AlunoDTO dto = alunoService.deleteAluno(id);
-        if(dto == null) {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(dto);
+        return alunoService.deleteAluno(id)
+                           .map(ResponseEntity::ok)
+                           .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("{id}")
     public ResponseEntity<AlunoDTO> modificaAluno(@PathVariable Long id, @RequestBody AlunoDTO modificado) {
-        return ResponseEntity.ok(alunoService.modificaAluno(id, modificado));
+        return alunoService.modificaAluno(id, modificado)
+                           .map(ResponseEntity::ok)
+                           .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
