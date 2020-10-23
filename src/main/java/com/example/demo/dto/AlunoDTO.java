@@ -11,7 +11,7 @@ public class AlunoDTO {
     private String nome;
     private String classe;
 
-    private Long mentorId;
+    private Long mentoriaId;
 
     public AlunoDTO(String nome, String classe) {
         this.nome = nome;
@@ -20,16 +20,6 @@ public class AlunoDTO {
 
     public AlunoDTO(Long id, String nome, String classe) {
         this(nome, classe);
-        this.id = id;
-    }
-
-    public AlunoDTO(String nome, String classe, Long mentorId) {
-        this(nome, classe);
-        this.mentorId = mentorId;
-    }
-
-    public AlunoDTO(Long id, String nome, String classe, Long mentorId) {
-        this(nome, classe, mentorId);
         this.id = id;
     }
 }

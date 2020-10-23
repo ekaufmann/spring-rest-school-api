@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.AlunoDTO;
 import com.example.demo.model.Aluno;
-import com.example.demo.model.Mentor;
+import com.example.demo.model.Mentoria;
 import com.example.demo.repository.AlunoRepository;
 import com.example.demo.util.DTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,6 @@ public class AlunoService {
 
     @Autowired
     AlunoRepository alunoRepository;
-
-    @Autowired
-    MentorService mentorService;
 
     public List<AlunoDTO> getAlunos() {
         List<Aluno> alunos = alunoRepository.findAll();
@@ -38,11 +35,9 @@ public class AlunoService {
     }
 
     public AlunoDTO criaAluno(AlunoDTO dto) {
-        Mentor mentor = mentorService.getMentorById(dto.getMentorId());
-        Aluno aluno = new Aluno(dto.getNome(), dto.getClasse(), mentor);
-        alunoRepository.save(aluno);
+        Aluno aluno = new Aluno(dto.getNome(), dto.getClasse());
 
-        return convertAlunoToDTO(aluno);
+        return convertAlunoToDTO(alunoRepository.save(aluno));
     }
 
     public AlunoDTO deleteAluno(Long id) {
@@ -55,11 +50,9 @@ public class AlunoService {
 
     public AlunoDTO modificaAluno(Long id, AlunoDTO modificado) {
         Aluno aluno = getAlunoById(id);
-        Long novoMentor = modificado.getMentorId();
 
         aluno.setNome(modificado.getNome() == null ? aluno.getNome() : modificado.getNome());
         aluno.setClasse(modificado.getClasse() == null ? aluno.getClasse() : modificado.getClasse());
-        aluno.setMentor(novoMentor == null ? aluno.getMentor() : mentorService.getMentorById(novoMentor));
 
         return convertAlunoToDTO(alunoRepository.save(aluno));
     }

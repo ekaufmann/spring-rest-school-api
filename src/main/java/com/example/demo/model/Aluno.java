@@ -13,13 +13,8 @@ public class Aluno extends Pessoa {
     @Column(length = 64)
     private String classe;
 
-    @ManyToOne
-    @JoinColumn(name = "id_mentor")
-    private Mentor mentor;
-
-    public Aluno(String nome, String classe, Mentor mentor) {
+    public Aluno(String nome, String classe) {
         super(nome);
         this.classe = classe;
-        this.mentor = mentor;
     }
 }
