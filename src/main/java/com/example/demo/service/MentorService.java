@@ -1,11 +1,16 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.MentorDTO;
 import com.example.demo.model.Mentor;
 import com.example.demo.repository.MentorRepository;
+import com.example.demo.util.DTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.example.demo.util.DTOConverter.convertMentorToDTO;
 
 @Service
 public class MentorService {
@@ -13,21 +18,37 @@ public class MentorService {
     @Autowired
     private MentorRepository mentorRepository;
 
-    public List<Mentor> getMentores() {
-        return mentorRepository.findAll();
+    public List<MentorDTO> getMentores() {
+        return mentorRepository.findAll()
+                .stream()
+                .map(DTOConverter::convertMentorToDTO)
+                .collect(Collectors.toList());
     }
 
-    public long criaMentor(Mentor mentor) {
-        mentorRepository.save(mentor);
-        return mentor.getId();
-    }
-
-    public Mentor getMentorById(Long id) {
+    protected Mentor getMentorById(Long id) {
         return mentorRepository.findById(id).orElse(null);
     }
 
-    public void deleteMentor(Long id) {
+    public MentorDTO getMentor(Long id) { return convertMentorToDTO(getMentorById(id)); }
+
+    public MentorDTO criaMentor(Mentor mentor) {
+        mentorRepository.save(mentor);
+        return convertMentorToDTO(mentor);
+    }
+
+    public MentorDTO deleteMentor(Long id) {
         Mentor mentor = getMentorById(id);
-        mentorRepository.delete(mentor);
+        if(mentor != null) {
+            mentorRepository.delete(mentor);
+        }
+        return convertMentorToDTO(mentor);
+    }
+
+    public MentorDTO modificaMentor(Long id, MentorDTO modificado) {
+        Mentor mentor = getMentorById(id);
+
+        mentor.setNome(modificado.getNome() == null ? mentor.getNome() : modificado.getNome());
+
+        return convertMentorToDTO(mentorRepository.save(mentor));
     }
 }

@@ -29,7 +29,7 @@ public class AlunoService {
                 .collect(Collectors.toList());
     }
 
-    private Aluno getAlunoById(Long id) {
+    protected Aluno getAlunoById(Long id) {
         return alunoRepository.findById(id).orElse(null);
     }
 

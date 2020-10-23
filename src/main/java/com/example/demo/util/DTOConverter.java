@@ -25,6 +25,7 @@ public class DTOConverter {
                     .map(DTOConverter::convertAlunoToDTO)
                     .collect(Collectors.toList())
             );
+            return dto;
         }
         return null;
     }

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.MentorDTO;
 import com.example.demo.model.Mentor;
 import com.example.demo.service.MentorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,23 +19,34 @@ public class MentorController {
     MentorService mentorService;
 
     @GetMapping
-    public ResponseEntity<List<Mentor>> getMentores() {
-        return new ResponseEntity<List<Mentor>>(mentorService.getMentores(), HttpStatus.ACCEPTED);
+    public ResponseEntity<List<MentorDTO>> getMentores() {
+        return new ResponseEntity<List<MentorDTO>>(mentorService.getMentores(), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Mentor> getMentorById(@PathVariable Long id) {
-        return ResponseEntity.ok(mentorService.getMentorById(id));
+    public ResponseEntity<MentorDTO> getMentorById(@PathVariable Long id) {
+        return ResponseEntity.ok(mentorService.getMentor(id));
     }
 
     @PostMapping
-    public ResponseEntity<Boolean> criaMentor(@RequestBody Mentor mentor) {
-        long id = mentorService.criaMentor(mentor);
-        return ResponseEntity.created(URI.create("/mentor/" + id)).build();
+    public ResponseEntity<MentorDTO> criaMentor(@RequestBody Mentor mentor) {
+        MentorDTO dto = mentorService.criaMentor(mentor);
+        Long id = dto.getId();
+
+        return ResponseEntity.created(URI.create("/mentor/" + id)).body(dto);
     }
 
     @DeleteMapping("{id}")
-    public void deleteMentor(@PathVariable Long id) {
-        mentorService.deleteMentor(id);
+    public ResponseEntity<MentorDTO> deleteMentor(@PathVariable Long id) {
+        MentorDTO dto = mentorService.deleteMentor(id);
+        if(dto == null) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<MentorDTO> modificaMentor(@PathVariable Long id, @RequestBody MentorDTO modificado) {
+        return ResponseEntity.ok(mentorService.modificaMentor(id, modificado));
     }
 }
