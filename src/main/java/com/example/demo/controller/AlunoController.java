@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.AlunoDTO;
-import com.example.demo.model.Aluno;
 import com.example.demo.service.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,8 +36,16 @@ public class AlunoController {
     }
 
     @DeleteMapping("{id}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<AlunoDTO> deleteAluno(@PathVariable Long id) {
-        return ResponseEntity.ok(alunoService.deleteAluno(id));
+        AlunoDTO dto = alunoService.deleteAluno(id);
+        if(dto == null) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<AlunoDTO> modificaAluno(@PathVariable Long id, @RequestBody AlunoDTO modificado) {
+        return ResponseEntity.ok(alunoService.modificaAluno(id, modificado));
     }
 }

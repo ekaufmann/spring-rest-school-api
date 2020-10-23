@@ -13,9 +13,18 @@ public class AlunoDTO {
 
     private Long mentorId;
 
-    public AlunoDTO(String nome, String classe, Long mentorId) {
+    public AlunoDTO(String nome, String classe) {
         this.nome = nome;
         this.classe = classe;
+    }
+
+    public AlunoDTO(Long id, String nome, String classe) {
+        this(nome, classe);
+        this.id = id;
+    }
+
+    public AlunoDTO(String nome, String classe, Long mentorId) {
+        this(nome, classe);
         this.mentorId = mentorId;
     }
 

@@ -1,11 +1,11 @@
 package com.example.demo.model;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Getter
+@Data
 @NoArgsConstructor
 @Entity
 public class Aluno extends Pessoa {

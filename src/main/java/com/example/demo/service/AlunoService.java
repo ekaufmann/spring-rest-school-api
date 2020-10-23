@@ -24,7 +24,9 @@ public class AlunoService {
 
     public List<AlunoDTO> getAlunos() {
         List<Aluno> alunos = alunoRepository.findAll();
-        return alunos.stream().map(DTOConverter::convertAlunoToDTO).collect(Collectors.toList());
+        return alunos.stream()
+                .map(DTOConverter::convertAlunoToDTO)
+                .collect(Collectors.toList());
     }
 
     private Aluno getAlunoById(Long id) {
@@ -51,4 +53,14 @@ public class AlunoService {
         return convertAlunoToDTO(aluno);
     }
 
+    public AlunoDTO modificaAluno(Long id, AlunoDTO modificado) {
+        Aluno aluno = getAlunoById(id);
+        Long novoMentor = modificado.getMentorId();
+
+        aluno.setNome(modificado.getNome() == null ? aluno.getNome() : modificado.getNome());
+        aluno.setClasse(modificado.getClasse() == null ? aluno.getClasse() : modificado.getClasse());
+        aluno.setMentor(novoMentor == null ? aluno.getMentor() : mentorService.getMentorById(novoMentor));
+
+        return convertAlunoToDTO(alunoRepository.save(aluno));
+    }
 }
