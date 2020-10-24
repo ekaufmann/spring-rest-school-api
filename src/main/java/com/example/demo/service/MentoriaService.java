@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.MentoriaDTO;
+import com.example.demo.dto.MentoriaDTOResponse;
 import com.example.demo.mapper.MentoriaMapper;
 import com.example.demo.model.Aluno;
 import com.example.demo.model.Mentor;
@@ -10,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.demo.mapper.MentoriaMapper.convertMentoriaToDTO;
+import static com.example.demo.mapper.MentoriaMapper.convertMentoriaToDTOResponse;
 
 // TODO Mudar retornos para Optional<>
 @Service
@@ -27,17 +29,46 @@ public class MentoriaService {
     @Autowired
     AlunoService alunoService;
 
-    public List<MentoriaDTO> getMentorias() {
+    public List<MentoriaDTOResponse> getMentorias() {
         List<Mentoria> mentorias = mentoriaRepository.findAll();
         return mentorias.parallelStream()
-                .map(MentoriaMapper::convertMentoriaToDTO)
+                .map(MentoriaMapper::convertMentoriaToDTOResponse)
                 .collect(Collectors.toList());
     }
 
-    public MentoriaDTO criaMentoria(MentoriaDTO dto) {
-        Mentor mentor = mentorService.getMentorById(dto.getMentorId());
-        Aluno aluno = alunoService.getAlunoById(dto.getAlunoId());
+    public Mentoria getMentoriaById(Long id) { return mentoriaRepository.findById(id).orElse(null); }
 
-        return convertMentoriaToDTO(mentoriaRepository.save(new Mentoria(mentor, aluno)));
+    public Optional<MentoriaDTOResponse> getMentoria(Long id) {
+        return Optional.ofNullable(
+                convertMentoriaToDTOResponse(getMentoriaById(id))
+        );
+    }
+
+    public Optional<MentoriaDTOResponse> criaMentoria(MentoriaDTO dto) {
+        Optional<Mentor> mentor = mentorService.getMentorById(dto.getMentorId());
+        Optional<Aluno> aluno = alunoService.getAlunoById(dto.getAlunoId());
+        Optional<Mentoria> mentoriaOpt = Optional.empty();
+
+        if(mentor.isPresent() && aluno.isPresent()) {
+            Mentoria mentoria = new Mentoria(mentor.get(), aluno.get());
+            mentoriaOpt = Optional.of(mentoriaRepository.save(mentoria));
+        }
+
+        return mentoriaOpt.map(MentoriaMapper::convertMentoriaToDTOResponse);
+    }
+
+    public Optional<MentoriaDTOResponse> deleteMentoria(Long id) {
+        Optional<Mentoria> mentoria = Optional.ofNullable(getMentoriaById(id));
+        mentoria.ifPresent(mentoriaRepository::delete);
+        return mentoria.map(MentoriaMapper::convertMentoriaToDTOResponse);
+    }
+
+    public Optional<MentoriaDTOResponse> modificaMentoria(Long id, MentoriaDTO mentoriaModificada) {
+        Optional<Mentoria> mentoria = Optional.ofNullable(getMentoriaById(id));
+        mentoria.ifPresent(m -> {
+            Aluno aluno = m.getAluno();
+            Mentor mentor = m.getMentor();
+            m.
+        });
     }
 }

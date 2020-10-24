@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.demo.mapper.MentorMapper.convertMentorToDTO;
@@ -19,37 +20,43 @@ public class MentorService {
     @Autowired
     private MentorRepository mentorRepository;
 
-    public List<MentorDTO> getMentores() {
-        return mentorRepository.findAll()
+    public Optional<List<MentorDTO>> getMentores() {
+        return Optional.of(
+                mentorRepository.findAll()
                 .parallelStream()
                 .map(MentorMapper::convertMentorToDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+        );
     }
 
-    protected Mentor getMentorById(Long id) {
-        return mentorRepository.findById(id).orElse(null);
+    protected Optional<Mentor> getMentorById(Long id) {
+        return mentorRepository.findById(id);
     }
 
-    public MentorDTO getMentor(Long id) { return convertMentorToDTO(getMentorById(id)); }
+    public Optional<MentorDTO> getMentor(Long id) {
+        return getMentorById(id).map(MentorMapper::convertMentorToDTO);
+    }
 
     public MentorDTO criaMentor(Mentor mentor) {
         mentorRepository.save(mentor);
         return convertMentorToDTO(mentor);
     }
 
-    public MentorDTO deleteMentor(Long id) {
-        Mentor mentor = getMentorById(id);
-        if(mentor != null) {
-            mentorRepository.delete(mentor);
-        }
-        return convertMentorToDTO(mentor);
+    public Optional<MentorDTO> deleteMentor(Long id) {
+        Optional<Mentor> mentor = getMentorById(id);
+        mentor.ifPresent(mentorRepository::delete);
+
+        return mentor.map(MentorMapper::convertMentorToDTO);
     }
 
-    public MentorDTO modificaMentor(Long id, MentorDTO modificado) {
-        Mentor mentor = getMentorById(id);
+    public Optional<MentorDTO> modificaMentor(Long id, MentorDTO mentorModificado) {
+        Optional<Mentor> mentor = getMentorById(id);
 
-        mentor.setNome(modificado.getNome() == null ? mentor.getNome() : modificado.getNome());
+        mentor.ifPresent(m -> {
+            m.setNome(mentorModificado.getNome() == null ? m.getNome() : mentorModificado.getNome());
+            mentorRepository.save(m);
+        });
 
-        return convertMentorToDTO(mentorRepository.save(mentor));
+        return mentor.map(MentorMapper::convertMentorToDTO);
     }
 }

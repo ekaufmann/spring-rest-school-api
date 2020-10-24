@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.dto.AlunoDTO;
 import com.example.demo.service.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +19,8 @@ public class AlunoController {
 
     @GetMapping
     public ResponseEntity<List<AlunoDTO>> getAlunos() {
-        return new ResponseEntity<List<AlunoDTO>>(alunoService.getAlunos(), HttpStatus.ACCEPTED);
+        List<AlunoDTO> alunos = alunoService.getAlunos();
+        return alunos != null ? ResponseEntity.ok(alunos) : ResponseEntity.notFound().build() ;
     }
 
     @GetMapping("{id}")
@@ -46,8 +46,8 @@ public class AlunoController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<AlunoDTO> modificaAluno(@PathVariable Long id, @RequestBody AlunoDTO modificado) {
-        return alunoService.modificaAluno(id, modificado)
+    public ResponseEntity<AlunoDTO> modificaAluno(@PathVariable Long id, @RequestBody AlunoDTO alunoModificado) {
+        return alunoService.modificaAluno(id, alunoModificado)
                            .map(ResponseEntity::ok)
                            .orElseGet(() -> ResponseEntity.notFound().build());
     }

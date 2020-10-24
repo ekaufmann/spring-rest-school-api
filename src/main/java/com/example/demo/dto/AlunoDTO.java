@@ -11,8 +11,6 @@ public class AlunoDTO {
     private String nome;
     private String classe;
 
-    private Long mentoriaId;
-
     public AlunoDTO(String nome, String classe) {
         this.nome = nome;
         this.classe = classe;

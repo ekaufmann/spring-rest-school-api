@@ -4,12 +4,12 @@ import com.example.demo.dto.MentorDTO;
 import com.example.demo.model.Mentor;
 import com.example.demo.service.MentorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/mentor")
@@ -20,12 +20,16 @@ public class MentorController {
 
     @GetMapping
     public ResponseEntity<List<MentorDTO>> getMentores() {
-        return new ResponseEntity<List<MentorDTO>>(mentorService.getMentores(), HttpStatus.ACCEPTED);
+        Optional<List<MentorDTO>> mentores = mentorService.getMentores();
+        return mentores.map(ResponseEntity::ok)
+                       .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("{id}")
     public ResponseEntity<MentorDTO> getMentorById(@PathVariable Long id) {
-        return ResponseEntity.ok(mentorService.getMentor(id));
+        return mentorService.getMentor(id)
+                            .map(ResponseEntity::ok)
+                            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -38,15 +42,15 @@ public class MentorController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<MentorDTO> deleteMentor(@PathVariable Long id) {
-        MentorDTO dto = mentorService.deleteMentor(id);
-        if(dto == null) {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(dto);
+        return mentorService.deleteMentor(id)
+                            .map(ResponseEntity::ok)
+                            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<MentorDTO> modificaMentor(@PathVariable Long id, @RequestBody MentorDTO modificado) {
-        return ResponseEntity.ok(mentorService.modificaMentor(id, modificado));
+    public ResponseEntity<MentorDTO> modificaMentor(@PathVariable Long id, @RequestBody MentorDTO mentorModificado) {
+        return mentorService.modificaMentor(id, mentorModificado)
+                            .map(ResponseEntity::ok)
+                            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

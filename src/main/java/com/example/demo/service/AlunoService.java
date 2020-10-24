@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.demo.mapper.AlunoMapper.*;
+import static com.example.demo.mapper.AlunoMapper.convertAlunoToDTO;
 
 @Service
 public class AlunoService {
@@ -26,14 +26,12 @@ public class AlunoService {
                 .collect(Collectors.toList());
     }
 
-    protected Aluno getAlunoById(Long id) {
-        return alunoRepository.findById(id).orElse(null);
+    protected Optional<Aluno> getAlunoById(Long id) {
+        return alunoRepository.findById(id);
     }
 
     public Optional<AlunoDTO> getAluno(Long id) {
-        return Optional.ofNullable(
-                (convertAlunoToDTO(getAlunoById(id)))
-        );
+        return getAlunoById(id).map(AlunoMapper::convertAlunoToDTO);
     }
 
     public AlunoDTO criaAluno(AlunoDTO dto) {
@@ -43,18 +41,21 @@ public class AlunoService {
     }
 
     public Optional<AlunoDTO> deleteAluno(Long id) {
-        Optional<Aluno> aluno = Optional.ofNullable(getAlunoById(id));
+        Optional<Aluno> aluno = getAlunoById(id);
         aluno.ifPresent(alunoRepository::delete);
 
         return aluno.map(AlunoMapper::convertAlunoToDTO);
     }
 
-    public Optional<AlunoDTO> modificaAluno(Long id, AlunoDTO modificado) {
-        Aluno aluno = getAlunoById(id);
+    public Optional<AlunoDTO> modificaAluno(Long id, AlunoDTO alunoModificado) {
+        Optional<Aluno> aluno = getAlunoById(id);
 
-        aluno.setNome(modificado.getNome() == null ? aluno.getNome() : modificado.getNome());
-        aluno.setClasse(modificado.getClasse() == null ? aluno.getClasse() : modificado.getClasse());
+        aluno.ifPresent(a -> {
+            a.setNome(alunoModificado.getNome() == null ? a.getNome() : alunoModificado.getNome());
+            a.setClasse(alunoModificado.getClasse() == null ? a.getClasse() : alunoModificado.getClasse());
+            alunoRepository.save(a);
+        });
 
-        return Optional.ofNullable(convertAlunoToDTO(alunoRepository.save(aluno)));
+        return aluno.map(AlunoMapper::convertAlunoToDTO);
     }
 }
