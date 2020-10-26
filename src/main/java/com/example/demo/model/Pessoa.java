@@ -14,7 +14,7 @@ public abstract class Pessoa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    @Column(nullable = false, length = 128)
+    @Column(nullable = false, length = 96)
     protected String nome;
 
     public Pessoa(String nome) {

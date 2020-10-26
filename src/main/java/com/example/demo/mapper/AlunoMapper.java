@@ -7,7 +7,7 @@ public class AlunoMapper {
 
     public static AlunoDTO convertAlunoToDTO(Aluno aluno) {
         if(aluno != null) {
-            return new AlunoDTO(aluno.getId(), aluno.getNome(), aluno.getClasse());
+            return new AlunoDTO(aluno.getId(), aluno.getNome(), aluno.getClasse(), aluno.getAtivo());
         }
         return null;
     }
