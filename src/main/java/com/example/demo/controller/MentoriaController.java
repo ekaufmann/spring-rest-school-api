@@ -34,9 +34,8 @@ public class MentoriaController {
     @PostMapping
     public ResponseEntity<MentoriaDTOResponse> criaMentoria(@RequestBody MentoriaDTO dto) {
         return mentoriaService.criaMentoria(dto)
-                              .map(m -> {
-                                  ResponseEntity.created(URI.create("/mentoria/" + m.getId())).body(m);
-                              }).orElseGet(() ->
+                              .map(m -> ResponseEntity.created(URI.create("/mentoria/" + m.getId())).body(m))
+                              .orElseGet(() ->
                                   new ResponseEntity<MentoriaDTOResponse>((MentoriaDTOResponse) null, HttpStatus.FORBIDDEN)
                               );
     }

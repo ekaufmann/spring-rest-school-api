@@ -66,9 +66,15 @@ public class MentoriaService {
     public Optional<MentoriaDTOResponse> modificaMentoria(Long id, MentoriaDTO mentoriaModificada) {
         Optional<Mentoria> mentoria = Optional.ofNullable(getMentoriaById(id));
         mentoria.ifPresent(m -> {
-            Aluno aluno = m.getAluno();
-            Mentor mentor = m.getMentor();
-            m.
+            Optional<Aluno> aluno = alunoService.getAlunoById(mentoriaModificada.getAlunoId());
+            Optional<Mentor> mentor = mentorService.getMentorById(mentoriaModificada.getMentorId());
+
+            m.setAluno(aluno.orElseGet(m::getAluno));
+            m.setMentor(mentor.orElseGet(m::getMentor));
+
+            mentoriaRepository.save(m);
         });
+
+        return mentoria.map(MentoriaMapper::convertMentoriaToDTOResponse);
     }
 }
