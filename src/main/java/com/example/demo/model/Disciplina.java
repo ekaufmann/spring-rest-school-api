@@ -24,17 +24,18 @@ public class Disciplina {
 
     private Byte media = 7;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "aluno")
-    private Set<Mentoria> mentorias;
-
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "disciplinas")
     private Set<Programa> programas;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "disciplina")
+    private Set<Avaliacao> avaliacoes;
 
     public Disciplina(String nome) {
         this.nome = nome;
     }
 
-/*    public void calculaMedia() {
+    /*
+    public void calculaMedia() {
 
     }*/
 }
