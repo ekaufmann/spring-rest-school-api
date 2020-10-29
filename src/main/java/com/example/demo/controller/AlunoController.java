@@ -18,9 +18,12 @@ public class AlunoController {
     private AlunoService alunoService;
 
     @GetMapping
-    public ResponseEntity<List<AlunoDTO>> getAlunos() {
-        List<AlunoDTO> alunos = alunoService.getAlunos();
-        return alunos != null ? ResponseEntity.ok(alunos) : ResponseEntity.notFound().build() ;
+    public ResponseEntity<List<AlunoDTO>> getAlunos(@RequestParam Boolean active) {
+        Optional<List<AlunoDTO>> alunos = alunoService.getAlunos(active);
+        return alunos.map(ResponseEntity::ok)
+                .orElseGet(
+                        () -> ResponseEntity.notFound().build()
+                );
     }
 
     @GetMapping("{id}")

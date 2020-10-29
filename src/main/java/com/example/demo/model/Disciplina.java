@@ -22,6 +22,9 @@ public class Disciplina {
 
     private Byte media;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "aluno")
+    private Set<Mentoria> mentorias;
+
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "disciplinas")
     private Set<Programa> programas;
 

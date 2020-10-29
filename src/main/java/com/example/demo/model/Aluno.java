@@ -14,7 +14,7 @@ public class Aluno extends Pessoa {
     private String classe;
 
     @Column
-    private Boolean ativo = true; // 0 == false; 1 == true;
+    private Boolean active = true; // 0 == false; 1 == true;
 
     @ManyToOne
     @JoinColumn(name = "programaId")

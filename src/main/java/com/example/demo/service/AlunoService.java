@@ -19,11 +19,19 @@ public class AlunoService {
     @Autowired
     AlunoRepository alunoRepository;
 
-    public List<AlunoDTO> getAlunos() {
-        List<Aluno> alunos = alunoRepository.findAll();
-        return alunos.parallelStream()
+    public Optional<List<AlunoDTO>> getAlunos(Boolean active) {
+
+        if(active != null) {
+            return Optional.of(alunoRepository.findAllByActive(active)
+                            .parallelStream()
+                            .map(AlunoMapper::convertAlunoToDTO)
+                            .collect(Collectors.toList())
+            );
+        }
+        return Optional.of(alunoRepository.findAll()
+                .parallelStream()
                 .map(AlunoMapper::convertAlunoToDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     protected Optional<Aluno> getAlunoById(Long id) {
