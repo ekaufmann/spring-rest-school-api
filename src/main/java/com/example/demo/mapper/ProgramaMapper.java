@@ -9,14 +9,14 @@ import java.util.stream.Collector;
 
 public class ProgramaMapper {
 
-    public static ProgramaDTOResponse ProgramaToDTO(Programa programa) {
+    public static ProgramaDTOResponse convertProgramaToDTOResponse(Programa programa) {
         if(programa != null) {
-            /*List<DisciplinaDTO> disciplinasDTO = programa.getDisciplinas()
+/*            List<DisciplinaDTO> disciplinasDTO = programa.getDisciplinas()
                                                          .parallelStream()
                                                          .map(DisicplinaMapper::DisciplinaToDTO)
                                                          .collect(Collector.toList());*/
-            //return new ProgramaDTOResponse(programa.getNome(), programa.getDataInicio(), programa.getDataFim());
-            return new ProgramaDTOResponse("Funcionou");
+            return new ProgramaDTOResponse(programa.getId(), programa.getNome(), programa.getDataInicio(), programa.getDataFim());
+            //return new ProgramaDTOResponse(1L, "Funcionou");
         }
         return null;
     }

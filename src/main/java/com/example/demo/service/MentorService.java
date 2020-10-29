@@ -37,8 +37,7 @@ public class MentorService {
     }
 
     public MentorDTO criaMentor(Mentor mentor) {
-        mentorRepository.save(mentor);
-        return convertMentorToDTO(mentor);
+        return convertMentorToDTO(mentorRepository.save(mentor));
     }
 
     public Optional<MentorDTO> deleteMentor(Long id) {

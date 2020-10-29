@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -25,4 +26,7 @@ public class Disciplina {
     @ManyToOne
     @JoinColumn(name = "mentorId")
     private Mentor mentor;
+
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "disciplinas")
+    private Set<Programa> programas;
 }

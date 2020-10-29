@@ -50,7 +50,7 @@ public class ProgramaController {
 
     @PutMapping("{id}")
     public ResponseEntity<ProgramaDTOResponse> modificaPrograma(@PathVariable Long id, @RequestBody ProgramaDTO programaModificado) {
-        return programaService.modificaMentor(id, programaModificado)
+        return programaService.modificaPrograma(id, programaModificado)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

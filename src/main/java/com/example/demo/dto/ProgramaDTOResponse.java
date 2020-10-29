@@ -9,19 +9,19 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class ProgramaDTOResponse extends ProgramaDTO{
 
-/*    private List<DisciplinaDTO> disciplinasDTO;
+    private Long id;
+    private String teste;
+    private LocalDate dataInicio;
+    private LocalDate dataFim;
+
+    /*private List<DisciplinaDTO> disciplinasDTO;
 
     public ProgramaDTOResponse(String nome, LocalDate dataInicio, LocalDate dataFim, List<DisciplinaDTO> disciplinasDTO) {
         super(nome, dataInicio, dataFim);
         this.disciplinasDTO = disciplinasDTO;
     }*/
-
-    private String teste;
-
-    public ProgramaDTOResponse(String teste) {
-        this.teste = teste;
-    }
 }
