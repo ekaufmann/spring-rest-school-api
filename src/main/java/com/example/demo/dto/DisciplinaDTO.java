@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class DisciplinaDTO {
 
     private String nome;
+    private Boolean active;
 }

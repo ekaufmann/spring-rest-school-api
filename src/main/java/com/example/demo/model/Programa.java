@@ -25,7 +25,7 @@ public class Programa {
     @Column(name = "dataFim")
     private LocalDate dataFim;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "programa_disciplina",
                joinColumns = {@JoinColumn(name = "programaId", nullable = false)},
                     inverseJoinColumns = {@JoinColumn(name = "disciplinaId", nullable = false)})
@@ -35,5 +35,9 @@ public class Programa {
         this.nome = nome;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
+    }
+
+    public Set<Disciplina> getCopyOfDisciplinas() {
+        return Set.copyOf(disciplinas);
     }
 }

@@ -11,5 +11,6 @@ public class DisciplinaDTOResponse {
 
     private Long id;
     private String nome;
+    private Boolean active;
     private Byte media;
 }

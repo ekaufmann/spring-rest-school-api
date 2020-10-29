@@ -2,11 +2,13 @@ package com.example.demo.service;
 
 import com.example.demo.dto.DisciplinaDTO;
 import com.example.demo.dto.DisciplinaDTOResponse;
+import com.example.demo.mapper.AlunoMapper;
 import com.example.demo.mapper.DisciplinaMapper;
 import com.example.demo.model.Disciplina;
 import com.example.demo.repository.DisciplinaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,13 +22,20 @@ public class DisciplinaService {
     @Autowired
     DisciplinaRepository disciplinaRepository;
 
-    public Optional<List<DisciplinaDTOResponse>> getDisciplinas() {
-        return Optional.of(
-                disciplinaRepository.findAll()
-                                    .parallelStream()
-                                    .map(DisciplinaMapper::convertDisciplinaToDTOResponse)
-                                    .collect(Collectors.toList())
-        );
+    public Optional<List<DisciplinaDTOResponse>> getDisciplinas(Boolean active) {
+
+        if(active != null) {
+            return Optional.of(
+                    disciplinaRepository.findAllByActive(active)
+                            .parallelStream()
+                            .map(DisciplinaMapper::convertDisciplinaToDTOResponse)
+                            .collect(Collectors.toList())
+            );
+        }
+        return Optional.of(disciplinaRepository.findAll()
+                .parallelStream()
+                .map(DisciplinaMapper::convertDisciplinaToDTOResponse)
+                .collect(Collectors.toList()));
     }
 
     public Optional<Disciplina> getDisciplinaById(Long id) {
@@ -44,10 +53,12 @@ public class DisciplinaService {
         return disciplina.map(DisciplinaMapper::convertDisciplinaToDTOResponse);
     }
 
+    @Transactional
     public Optional<DisciplinaDTOResponse> deleteDisciplina(Long id) {
-        Optional<Disciplina> disciplina = getDisciplinaById(id);
-        disciplina.ifPresent(disciplinaRepository::delete);
-        return disciplina.map(DisciplinaMapper::convertDisciplinaToDTOResponse);
+        if(disciplinaRepository.logicalDelete(id) == 1) {
+            return getDisciplina(id);
+        }
+        return Optional.empty();
     }
 
 
@@ -56,7 +67,10 @@ public class DisciplinaService {
         disciplina.ifPresent(
                 d -> {
                     String novoNome = disciplinaModificado.getNome();
+                    Boolean situacao = disciplinaModificado.getActive();
+
                     d.setNome(novoNome == null ? d.getNome() : novoNome);
+                    d.setActive(situacao == null ? d.getActive() : situacao);
 
                     disciplinaRepository.save(d);
                 }

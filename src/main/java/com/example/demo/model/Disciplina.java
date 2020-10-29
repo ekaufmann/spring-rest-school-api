@@ -20,7 +20,9 @@ public class Disciplina {
     @Column(length = 64)
     private String nome;
 
-    private Byte media;
+    private Boolean active = true;
+
+    private Byte media = 7;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "aluno")
     private Set<Mentoria> mentorias;

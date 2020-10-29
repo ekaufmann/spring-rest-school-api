@@ -25,8 +25,8 @@ public class DisciplinaController {
     private DisciplinaService disciplinaService;
 
     @GetMapping
-    public ResponseEntity<List<DisciplinaDTOResponse>> getDisciplinas() {
-        Optional<List<DisciplinaDTOResponse>> disciplinas = disciplinaService.getDisciplinas();
+    public ResponseEntity<List<DisciplinaDTOResponse>> getDisciplinas(@RequestParam Boolean active) {
+        Optional<List<DisciplinaDTOResponse>> disciplinas = disciplinaService.getDisciplinas(active);
         return disciplinas.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -61,6 +61,4 @@ public class DisciplinaController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-    // TODO Add and Remove disciplina based on the given index
 }

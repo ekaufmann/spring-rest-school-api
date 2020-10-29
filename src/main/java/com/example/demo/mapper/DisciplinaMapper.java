@@ -8,7 +8,7 @@ public class DisciplinaMapper {
 
     public static DisciplinaDTOResponse convertDisciplinaToDTOResponse(Disciplina disciplina) {
         if(disciplina != null) {
-            return new DisciplinaDTOResponse(disciplina.getId(), disciplina.getNome(), disciplina.getMedia());
+            return new DisciplinaDTOResponse(disciplina.getId(), disciplina.getNome(), disciplina.getActive(), disciplina.getMedia());
         }
         return null;
     }
