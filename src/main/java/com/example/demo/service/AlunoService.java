@@ -61,6 +61,7 @@ public class AlunoService {
         aluno.ifPresent(a -> {
             a.setNome(alunoModificado.getNome() == null ? a.getNome() : alunoModificado.getNome());
             a.setClasse(alunoModificado.getClasse() == null ? a.getClasse() : alunoModificado.getClasse());
+            a.setActive(alunoModificado.getActive() == null ? a.getActive() : alunoModificado.getActive());
             alunoRepository.save(a);
         });
 
