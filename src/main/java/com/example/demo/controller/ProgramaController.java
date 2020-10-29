@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.MentoriaDTOResponse;
 import com.example.demo.dto.ProgramaDTO;
 import com.example.demo.dto.ProgramaDTOResponse;
 import com.example.demo.model.Programa;
 import com.example.demo.service.ProgramaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,11 +36,13 @@ public class ProgramaController {
     }
 
     @PostMapping
-    public ResponseEntity<ProgramaDTOResponse> criaPrograma(@RequestBody Programa programa) {
-        ProgramaDTOResponse dto = programaService.criaPrograma(programa);
-        Long id = dto.getId();
-
-        return ResponseEntity.created(URI.create("/programa/" + id)).body(dto);
+    public ResponseEntity<ProgramaDTOResponse> criaPrograma(@RequestBody ProgramaDTO programaDTO) {
+        return programaService.criaPrograma(programaDTO)
+                .map(
+                        p -> ResponseEntity.created(URI.create("/mentoria/" + p.getId())).body(p))
+                .orElseGet(
+                        () -> new ResponseEntity<>((ProgramaDTOResponse) null, HttpStatus.FORBIDDEN)
+                );
     }
 
     @DeleteMapping("{id}")
@@ -54,4 +58,6 @@ public class ProgramaController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    // TODO Add and Remove disciplina based on the given index
 }

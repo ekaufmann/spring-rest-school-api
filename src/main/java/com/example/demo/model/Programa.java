@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -29,7 +29,7 @@ public class Programa {
     @JoinTable(name = "programa_disciplina",
                joinColumns = {@JoinColumn(name = "programaId", nullable = false)},
                     inverseJoinColumns = {@JoinColumn(name = "disciplinaId", nullable = false)})
-    private List<Disciplina> disciplinas;
+    private Set<Disciplina> disciplinas;
 
     public Programa(String nome, LocalDate dataInicio, LocalDate dataFim) {
         this.nome = nome;

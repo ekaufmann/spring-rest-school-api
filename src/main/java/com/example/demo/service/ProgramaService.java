@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.example.demo.mapper.ProgramaMapper.convertDTOToPrograma;
 import static com.example.demo.mapper.ProgramaMapper.convertProgramaToDTOResponse;
 
 @Service
@@ -38,8 +39,10 @@ public class ProgramaService {
     }
 
 
-    public ProgramaDTOResponse criaPrograma(Programa programa) {
-        return convertProgramaToDTOResponse(programaRepository.save(programa));
+    public Optional<ProgramaDTOResponse> criaPrograma(ProgramaDTO programaDTO) {
+        Optional<Programa> programa = Optional.of(convertDTOToPrograma(programaDTO));
+        programa.ifPresent(programaRepository::save);
+        return programa.map(ProgramaMapper::convertProgramaToDTOResponse);
     }
 
 

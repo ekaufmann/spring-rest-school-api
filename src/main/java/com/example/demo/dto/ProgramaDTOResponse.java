@@ -14,10 +14,13 @@ import java.util.List;
 public class ProgramaDTOResponse extends ProgramaDTO{
 
     private Long id;
-    private String teste;
-    private LocalDate dataInicio;
-    private LocalDate dataFim;
 
+    public ProgramaDTOResponse(Long id, String nome, LocalDate dataInicio, LocalDate dataFim) {
+        super(nome, dataInicio, dataFim);
+        this.id = id;
+    }
+
+    // TODO Create Set or List of DisciplinaDTO
     /*private List<DisciplinaDTO> disciplinasDTO;
 
     public ProgramaDTOResponse(String nome, LocalDate dataInicio, LocalDate dataFim, List<DisciplinaDTO> disciplinasDTO) {
