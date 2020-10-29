@@ -15,11 +15,11 @@ public class Mentoria {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "mentor_id", nullable = false)
+    @JoinColumn(name = "mentorId", nullable = false)
     private Mentor mentor;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "aluno_id", nullable = false)
+    @JoinColumn(name = "alunoId", nullable = false)
     private Aluno aluno;
 
     public Mentoria(Mentor mentor, Aluno aluno) {

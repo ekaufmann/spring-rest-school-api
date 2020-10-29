@@ -13,7 +13,12 @@ public class Aluno extends Pessoa {
     @Column(length = 64)
     private String classe;
 
-    private Byte ativo = 1; // 0 == false; 1 == true;
+    @Column
+    private Boolean ativo = true; // 0 == false; 1 == true;
+
+    @ManyToOne
+    @JoinColumn(name = "programaId")
+    private Programa programa;
 
     public Aluno(String nome, String classe) {
         super(nome);

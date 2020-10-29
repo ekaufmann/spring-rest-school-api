@@ -1,13 +1,13 @@
-/*
 package com.example.demo.model;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
-@Getter
+@Data
 @NoArgsConstructor
 @Entity
 public class Programa {
@@ -19,11 +19,17 @@ public class Programa {
     @Column(name = "nome", nullable = false, length = 64)
     private String nome;
 
-    @Column(name = "data_inicio")
+    @Column(name = "dataInicio")
     private LocalDate dataInicio;
 
-    @Column(name = "data_inicio")
+    @Column(name = "dataFim")
     private LocalDate dataFim;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "programa_disciplina",
+               joinColumns = {@JoinColumn(name = "programaId", nullable = false)},
+                    inverseJoinColumns = {@JoinColumn(name = "disciplinaId", nullable = false)})
+    private List<Disciplina> disciplinas;
 
     public Programa(String nome, LocalDate dataInicio, LocalDate dataFim) {
         this.nome = nome;
@@ -31,4 +37,3 @@ public class Programa {
         this.dataFim = dataFim;
     }
 }
-*/

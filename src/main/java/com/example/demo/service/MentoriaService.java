@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 import static com.example.demo.mapper.MentoriaMapper.convertMentoriaToDTOResponse;
 
-// TODO Mudar retornos para Optional<>
 @Service
 public class MentoriaService {
 

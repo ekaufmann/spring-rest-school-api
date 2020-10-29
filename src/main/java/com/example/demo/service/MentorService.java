@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import static com.example.demo.mapper.MentorMapper.convertMentorToDTO;
 
-// TODO Mudar retornos para Optional<>
 @Service
 public class MentorService {
 
