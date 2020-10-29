@@ -19,4 +19,6 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     @Modifying
     @Query("UPDATE Aluno SET active = 0 WHERE id = ?1")
     Integer logicalDelete(Long id);
+
+    Optional<Aluno> findByNome(String nome);
 }

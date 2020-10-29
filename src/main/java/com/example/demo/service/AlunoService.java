@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.demo.mapper.AlunoMapper.convertAlunoToDTO;
-
 @Service
 public class AlunoService {
 
@@ -43,10 +41,15 @@ public class AlunoService {
         return getAlunoById(id).map(AlunoMapper::convertAlunoToDTO);
     }
 
-    public AlunoDTO criaAluno(AlunoDTO dto) {
+    // TODO Find a better way to validate
+    public Optional<AlunoDTO> criaAluno(AlunoDTO dto) {
+        Optional<Aluno> alunoByNome = alunoRepository.findByNome(dto.getNome());
+        if(alunoByNome.isPresent()) {
+            return Optional.empty();
+        }
         Aluno aluno = new Aluno(dto.getNome(), dto.getClasse());
-
-        return convertAlunoToDTO(alunoRepository.save(aluno));
+        return Optional.of(alunoRepository.save(aluno))
+                .map(AlunoMapper::convertAlunoToDTO);
     }
 
     @Transactional

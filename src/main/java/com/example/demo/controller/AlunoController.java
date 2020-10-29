@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.AlunoDTO;
 import com.example.demo.service.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,10 +36,13 @@ public class AlunoController {
 
     @PostMapping
     public ResponseEntity<AlunoDTO> criaAluno(@RequestBody AlunoDTO dto) {
-        AlunoDTO dtoResponse = alunoService.criaAluno(dto);
-        Long id = dtoResponse.getId();
-
-        return ResponseEntity.created(URI.create("/aluno/" + id)).body(dtoResponse);
+        return alunoService.criaAluno(dto).map(a -> ResponseEntity.created(URI.create("/aluno/" + a.getId())).body(a))
+                .orElseGet( //new ResponseEntity<>((AlunoDTO) null, HttpStatus.FORBIDDEN)
+                () -> {
+                    dto.setId(0L);
+                    dto.setNome("Aluno já existe!");
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(dto);
+                });
     }
 
     @DeleteMapping("{id}")
