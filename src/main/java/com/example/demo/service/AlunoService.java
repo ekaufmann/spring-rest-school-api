@@ -6,6 +6,7 @@ import com.example.demo.model.Aluno;
 import com.example.demo.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,11 +49,12 @@ public class AlunoService {
         return convertAlunoToDTO(alunoRepository.save(aluno));
     }
 
+    @Transactional
     public Optional<AlunoDTO> deleteAluno(Long id) {
-        Optional<Aluno> aluno = getAlunoById(id);
-        aluno.ifPresent(alunoRepository::delete);
-
-        return aluno.map(AlunoMapper::convertAlunoToDTO);
+        if(alunoRepository.logicalDelete(id) == 1) {
+            return getAluno(id);
+        }
+        return Optional.empty();
     }
 
     public Optional<AlunoDTO> modificaAluno(Long id, AlunoDTO alunoModificado) {
@@ -61,7 +63,6 @@ public class AlunoService {
         aluno.ifPresent(a -> {
             a.setNome(alunoModificado.getNome() == null ? a.getNome() : alunoModificado.getNome());
             a.setClasse(alunoModificado.getClasse() == null ? a.getClasse() : alunoModificado.getClasse());
-            a.setActive(alunoModificado.getActive() == null ? a.getActive() : alunoModificado.getActive());
             alunoRepository.save(a);
         });
 
