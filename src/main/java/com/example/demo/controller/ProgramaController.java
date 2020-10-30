@@ -29,7 +29,7 @@ public class ProgramaController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ProgramaDTOResponse> getMentorById(@PathVariable Long id) {
+    public ResponseEntity<ProgramaDTOResponse> getProgramaById(@PathVariable Long id) {
         return programaService.getPrograma(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

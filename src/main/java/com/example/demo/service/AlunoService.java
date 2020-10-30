@@ -19,18 +19,18 @@ public class AlunoService {
     AlunoRepository alunoRepository;
 
     public Optional<List<AlunoDTO>> getAlunos(Boolean active) {
+        List<Aluno> alunos;
 
         if(active != null) {
-            return Optional.of(alunoRepository.findAllByActive(active)
-                            .parallelStream()
-                            .map(AlunoMapper::convertAlunoToDTO)
-                            .collect(Collectors.toList())
-            );
+            alunos = alunoRepository.findAllByActive(active);
+        } else {
+            alunos = alunoRepository.findAll();
         }
-        return Optional.of(alunoRepository.findAll()
+
+        return Optional.of(alunos
                 .parallelStream()
                 .map(AlunoMapper::convertAlunoToDTO)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 
     protected Optional<Aluno> getAlunoById(Long id) {
@@ -44,9 +44,11 @@ public class AlunoService {
     // TODO Find a better way to validate
     public Optional<AlunoDTO> criaAluno(AlunoDTO dto) {
         Optional<Aluno> alunoByNome = alunoRepository.findByNome(dto.getNome());
+
         if(alunoByNome.isPresent()) {
             return Optional.empty();
         }
+
         Aluno aluno = new Aluno(dto.getNome(), dto.getClasse());
         return Optional.of(alunoRepository.save(aluno))
                 .map(AlunoMapper::convertAlunoToDTO);

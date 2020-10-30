@@ -26,7 +26,7 @@ public class FirstMockTest {
     @Test
     public void test() {
         var id = 1L;
-        Mockito.when(alunoRepository.findById(id)).thenReturn(java.util.Optional.of(new Aluno("t", "teste")));
+        Mockito.when(alunoRepository.findById(id)).thenReturn(Optional.of(new Aluno("t", "teste")));
         Optional<AlunoDTO> alunoByIndex = this.alunoService.getAluno(id);
 
         Assertions.assertTrue(alunoByIndex.isPresent());
