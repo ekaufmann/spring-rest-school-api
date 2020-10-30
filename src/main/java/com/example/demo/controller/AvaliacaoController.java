@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AvaliacaoDTO;
+import com.example.demo.dto.AvaliacaoDTOCreate;
 import com.example.demo.dto.AvaliacaoDTOResponse;
-import com.example.demo.model.Avaliacao;
+import com.example.demo.dto.AvaliacaoDTOUpdate;
 import com.example.demo.service.AvaliacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,8 +37,8 @@ public class AvaliacaoController {
     }
 
     @PostMapping
-    public ResponseEntity<AvaliacaoDTOResponse> criaAvaliacao(@RequestBody @Validated @NotNull AvaliacaoDTO AvaliacaoDTO) {
-        return avaliacaoService.criaAvaliacao(AvaliacaoDTO)
+    public ResponseEntity<AvaliacaoDTOResponse> criaAvaliacao(@RequestBody @Validated @NotNull AvaliacaoDTOCreate AvaliacaoDTOCreate) {
+        return avaliacaoService.criaAvaliacao(AvaliacaoDTOCreate)
                 .map(
                         a -> ResponseEntity.created(URI.create("/mentoria/" + a.getId())).body(a))
                 .orElseGet(
@@ -53,11 +53,11 @@ public class AvaliacaoController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-/*
+
     @PutMapping("{id}")
-    public ResponseEntity<AvaliacaoDTOResponse> modificaAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoDTO AvaliacaoModificado) {
-        return avaliacaoService.modificaAvaliacao(id, AvaliacaoModificado)
+    public ResponseEntity<AvaliacaoDTOResponse> modificaAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoDTOUpdate AvaliacaoModificada) {
+        return avaliacaoService.modificaAvaliacao(id, AvaliacaoModificada)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
-    }*/
+    }
 }

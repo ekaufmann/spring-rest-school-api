@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AvaliacaoDTO {
+public class AvaliacaoDTOCreate {
 
     @NotNull(message = "Disciplina precisa ser informada!")
     private Long disciplinaId;

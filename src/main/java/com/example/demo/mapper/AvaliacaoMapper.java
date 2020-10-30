@@ -3,11 +3,6 @@ package com.example.demo.mapper;
 import com.example.demo.dto.*;
 import com.example.demo.model.Avaliacao;
 import com.example.demo.model.Disciplina;
-import com.example.demo.model.Mentor;
-import com.example.demo.service.DisciplinaService;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Optional;
 
 import static com.example.demo.mapper.DisciplinaMapper.convertDisciplinaToDTOResponse;
 import static com.example.demo.mapper.AlunoMapper.convertAlunoToDTO;
@@ -36,10 +31,10 @@ public class AvaliacaoMapper {
         return null;
     }
 
-    public static Avaliacao convertDTOToAvaliacao(AvaliacaoDTO avaliacaoDTO, Disciplina disciplina) {
+    public static Avaliacao convertDTOToAvaliacao(AvaliacaoDTOCreate avaliacaoDTOCreate, Disciplina disciplina) {
 
-        if(avaliacaoDTO != null) {
-            return new Avaliacao(avaliacaoDTO.getConteudo(), avaliacaoDTO.getDataRealizacao(), disciplina);
+        if(avaliacaoDTOCreate != null) {
+            return new Avaliacao(avaliacaoDTOCreate.getConteudo(), avaliacaoDTOCreate.getDataRealizacao(), disciplina);
         }
         return null;
     }
