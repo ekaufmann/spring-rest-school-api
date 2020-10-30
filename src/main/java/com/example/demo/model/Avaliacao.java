@@ -17,6 +17,9 @@ public class Avaliacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 64)
+    private String conteudo;
+
     private Byte nota;
 
     private LocalDate dataRealizacao;
