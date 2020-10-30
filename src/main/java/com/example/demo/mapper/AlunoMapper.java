@@ -11,4 +11,11 @@ public class AlunoMapper {
         }
         return null;
     }
+
+    public static Aluno convertDTOToAluno(AlunoDTO alunoDTO) {
+        if(alunoDTO != null) {
+            return new Aluno(alunoDTO.getNome(), alunoDTO.getClasse());
+        }
+        return null;
+    }
 }

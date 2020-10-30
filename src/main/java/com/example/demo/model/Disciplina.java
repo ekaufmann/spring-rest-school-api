@@ -22,7 +22,7 @@ public class Disciplina {
 
     private Boolean active = true;
 
-    private Byte media = 7;
+    private Float media = 7.0f;
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "disciplinas")
     private Set<Programa> programas;

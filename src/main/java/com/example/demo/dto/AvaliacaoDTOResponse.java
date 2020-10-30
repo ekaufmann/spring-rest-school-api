@@ -15,7 +15,7 @@ public class AvaliacaoDTOResponse{
     private String conteudo;
     private LocalDate dataRealizacao;
     private LocalDate dataCorrecao;
-    private Byte nota;
+    private Float nota;
     private DisciplinaDTOResponse disciplina;
     private AlunoDTO aluno;
     private MentorDTO mentor;

@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.example.demo.mapper.AlunoMapper.*;
+
 @Service
 public class AlunoService {
 
@@ -30,7 +32,7 @@ public class AlunoService {
         return Optional.of(alunos
                 .parallelStream()
                 .map(AlunoMapper::convertAlunoToDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     protected Optional<Aluno> getAlunoById(Long id) {
@@ -42,16 +44,16 @@ public class AlunoService {
     }
 
     // TODO Find a better way to validate
-    public Optional<AlunoDTO> criaAluno(AlunoDTO dto) {
-        Optional<Aluno> alunoByNome = alunoRepository.findByNome(dto.getNome());
+    public Optional<AlunoDTO> criaAluno(AlunoDTO alunoDTO) {
+        Optional<Aluno> alunoByNome = alunoRepository.findByNome(alunoDTO.getNome());
 
         if(alunoByNome.isPresent()) {
             return Optional.empty();
         }
 
-        Aluno aluno = new Aluno(dto.getNome(), dto.getClasse());
-        return Optional.of(alunoRepository.save(aluno))
-                .map(AlunoMapper::convertAlunoToDTO);
+        Optional<Aluno> aluno = Optional.of(convertDTOToAluno(alunoDTO));
+        aluno.ifPresent(alunoRepository::save);
+        return aluno.map(AlunoMapper::convertAlunoToDTO);
     }
 
     @Transactional

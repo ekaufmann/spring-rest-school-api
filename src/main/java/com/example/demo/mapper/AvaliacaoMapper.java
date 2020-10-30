@@ -1,11 +1,13 @@
 package com.example.demo.mapper;
 
-import com.example.demo.dto.AlunoDTO;
-import com.example.demo.dto.AvaliacaoDTOResponse;
-import com.example.demo.dto.DisciplinaDTOResponse;
-import com.example.demo.dto.MentorDTO;
+import com.example.demo.dto.*;
 import com.example.demo.model.Avaliacao;
+import com.example.demo.model.Disciplina;
 import com.example.demo.model.Mentor;
+import com.example.demo.service.DisciplinaService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 import static com.example.demo.mapper.DisciplinaMapper.convertDisciplinaToDTOResponse;
 import static com.example.demo.mapper.AlunoMapper.convertAlunoToDTO;
@@ -27,6 +29,14 @@ public class AvaliacaoMapper {
                     disciplina,
                     aluno,
                     mentor);
+        }
+        return null;
+    }
+
+    public static Avaliacao convertDTOToAvaliacao(AvaliacaoDTO avaliacaoDTO, Disciplina disciplina) {
+
+        if(avaliacaoDTO != null) {
+            return new Avaliacao(avaliacaoDTO.getConteudo(), avaliacaoDTO.getDataRealizacao(), disciplina);
         }
         return null;
     }

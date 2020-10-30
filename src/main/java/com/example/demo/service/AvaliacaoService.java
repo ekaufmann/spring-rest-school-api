@@ -4,17 +4,26 @@ import com.example.demo.dto.AvaliacaoDTO;
 import com.example.demo.dto.AvaliacaoDTOResponse;
 import com.example.demo.mapper.AvaliacaoMapper;
 import com.example.demo.model.Avaliacao;
+import com.example.demo.model.Disciplina;
 import com.example.demo.repository.AvaliacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.example.demo.mapper.AvaliacaoMapper.*;
+
+@Service
 public class AvaliacaoService {
 
     @Autowired
     AvaliacaoRepository avaliacaoRepository;
+
+    @Autowired
+    DisciplinaService disciplinaService;
 
     public Optional<List<AvaliacaoDTOResponse>> getAvaliacoes() {
         return Optional.of(avaliacaoRepository.findAll()
@@ -32,18 +41,22 @@ public class AvaliacaoService {
         return getAvaliacaoById(id).map(AvaliacaoMapper::convertAvaliacaoToDTOResponse);
     }
 
+    @Transactional
     public Optional<AvaliacaoDTOResponse> criaAvaliacao(AvaliacaoDTO avaliacaoDTO) {
-        if(verificaAvaliacaoExistente(avaliacaoDTO)) {
-            return Optional.empty();
+        Optional<Avaliacao> avaliacao = getAvaliacaoExistente(avaliacaoDTO);
+
+        if(avaliacao.isEmpty()) {
+            Optional<Disciplina> disciplina = disciplinaService.getDisciplinaById(avaliacaoDTO.getDisciplinaId());
+            if(disciplina.isPresent()) {
+                avaliacao = Optional.of(convertDTOToAvaliacao(avaliacaoDTO, disciplina.get()));
+                avaliacao.map(avaliacaoRepository::save);
+            }
         }
-
-
-
+        return avaliacao.map(AvaliacaoMapper::convertAvaliacaoToDTOResponse);
     }
 
-    private Boolean verificaAvaliacaoExistente(AvaliacaoDTO avaliacaoDTO) {
-        Optional<Avaliacao> avaliacaoExistente = avaliacaoRepository.findByDisciplinaAndDataRealizacao(
+    private Optional<Avaliacao> getAvaliacaoExistente(AvaliacaoDTO avaliacaoDTO) {
+        return avaliacaoRepository.findByDisciplinaIdAndDataRealizacao(
                 avaliacaoDTO.getDisciplinaId(), avaliacaoDTO.getDataRealizacao());
-        return avaliacaoExistente.isPresent();
     }
 }

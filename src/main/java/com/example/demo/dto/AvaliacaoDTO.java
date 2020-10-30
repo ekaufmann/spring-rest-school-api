@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -11,8 +12,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class AvaliacaoDTO {
 
+    @NotNull(message = "Disciplina precisa ser informada!")
     private Long disciplinaId;
+
+    @NotNull(message = "Conteúdo precisa ser informado!")
     private String conteudo;
+
+    @NotNull(message = "Data de realização precisa ser informada!")
     private LocalDate dataRealizacao;
 
 }

@@ -20,7 +20,7 @@ public class Avaliacao {
     @Column(length = 64)
     private String conteudo;
 
-    private Byte nota;
+    private Float nota;
 
     private LocalDate dataRealizacao;
 
@@ -37,4 +37,10 @@ public class Avaliacao {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "mentorId")
     private Mentor mentor;
+
+    public Avaliacao(String conteudo, LocalDate dataRealizacao, Disciplina disciplina) {
+        this.conteudo = conteudo;
+        this.dataRealizacao = dataRealizacao;
+        this.disciplina = disciplina;
+    }
 }
