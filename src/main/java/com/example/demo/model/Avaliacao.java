@@ -20,11 +20,13 @@ public class Avaliacao {
     @Column(length = 64)
     private String conteudo;
 
-    private Float nota;
-
     private LocalDate dataRealizacao;
 
     private LocalDate dataCorrecao;
+
+    private Float nota;
+
+    private Boolean active = true;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "disciplinaId")

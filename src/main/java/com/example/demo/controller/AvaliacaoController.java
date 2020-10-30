@@ -46,13 +46,14 @@ public class AvaliacaoController {
                 );
     }
 
-/*    @DeleteMapping("{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<AvaliacaoDTOResponse> deleteAvaliacao(@PathVariable Long id) {
+        System.out.println("Aceitou delete");
         return avaliacaoService.deleteAvaliacao(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+/*
     @PutMapping("{id}")
     public ResponseEntity<AvaliacaoDTOResponse> modificaAvaliacao(@PathVariable Long id, @RequestBody AvaliacaoDTO AvaliacaoModificado) {
         return avaliacaoService.modificaAvaliacao(id, AvaliacaoModificado)

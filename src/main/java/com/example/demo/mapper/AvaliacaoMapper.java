@@ -21,14 +21,17 @@ public class AvaliacaoMapper {
             AlunoDTO aluno = convertAlunoToDTO(avaliacao.getAluno());
             MentorDTO mentor = convertMentorToDTO(avaliacao.getMentor());
 
-            return new AvaliacaoDTOResponse(avaliacao.getId(),
+            return new AvaliacaoDTOResponse(
+                    avaliacao.getId(),
                     avaliacao.getConteudo(),
                     avaliacao.getDataRealizacao(),
                     avaliacao.getDataCorrecao(),
                     avaliacao.getNota(),
+                    avaliacao.getActive(),
                     disciplina,
                     aluno,
-                    mentor);
+                    mentor
+            );
         }
         return null;
     }

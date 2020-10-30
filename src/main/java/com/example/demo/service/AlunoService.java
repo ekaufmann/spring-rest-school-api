@@ -58,10 +58,7 @@ public class AlunoService {
 
     @Transactional
     public Optional<AlunoDTO> deleteAluno(Long id) {
-        if(alunoRepository.logicalDelete(id) == 1) {
-            return getAluno(id);
-        }
-        return Optional.empty();
+        return alunoRepository.logicalDelete(id) == 1 ? getAluno(id) : Optional.empty();
     }
 
     public Optional<AlunoDTO> modificaAluno(Long id, AlunoDTO alunoModificado) {

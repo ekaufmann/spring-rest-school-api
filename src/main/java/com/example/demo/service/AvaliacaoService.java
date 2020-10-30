@@ -59,4 +59,9 @@ public class AvaliacaoService {
         return avaliacaoRepository.findByDisciplinaIdAndDataRealizacao(
                 avaliacaoDTO.getDisciplinaId(), avaliacaoDTO.getDataRealizacao());
     }
+
+    @Transactional
+    public Optional<AvaliacaoDTOResponse> deleteAvaliacao(Long id) {
+        return avaliacaoRepository.logicalDelete(id) == 1 ? getAvaliacao(id) : Optional.empty();
+    }
 }
