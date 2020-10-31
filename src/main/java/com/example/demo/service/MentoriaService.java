@@ -9,6 +9,7 @@ import com.example.demo.model.Mentoria;
 import com.example.demo.repository.MentoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +53,7 @@ public class MentoriaService {
         return mentoriaOpt.map(MentoriaMapper::convertMentoriaToDTOResponse);
     }
 
+    @Transactional
     public Optional<MentoriaDTOResponse> deleteMentoria(Long id) {
         return mentoriaRepository.logicalDelete(id) == 1 ? getMentoriaById(id).map(MentoriaMapper::convertMentoriaToDTOResponse) : Optional.empty();
     }

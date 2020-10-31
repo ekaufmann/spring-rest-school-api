@@ -17,8 +17,20 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     Aluno findByIdAndActive(Long id, Boolean active);
 
     @Modifying
-    @Query("UPDATE Aluno SET active = 0 WHERE id = ?1")
+    @Query(value = "UPDATE Aluno a, Mentoria m" +
+            "INNER JOIN m ON m.aluno_id = a.id" +
+            "SET a.active = 0, m.active = 0" +
+            "WHERE a.id = ?1", nativeQuery = true)
     Integer logicalDelete(Long id);
+
+    @Modifying
+    @Query(value = "UPDATE Aluno a, Mentoria m" +
+            "INNER JOIN m ON m.aluno_id = a.id" +
+            "INNER JOIN Mentor ON Mentor.id = m.mentor_id" +
+            "SET a.active = 1, m.active = 1" +
+            "WHERE a.id = ?1" +
+            "   AND Mentor.active = 1", nativeQuery = true)
+    Integer reativarAluno(Long id);
 
     Optional<Aluno> findByNome(String nome);
 }

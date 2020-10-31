@@ -34,6 +34,13 @@ public class AlunoController {
         return dto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/reativar")
+    public ResponseEntity<AlunoDTO> reativarAluno(@RequestParam Long id) {
+        return alunoService.reativarAluno(id).map(ResponseEntity::ok).orElseGet(
+                () -> ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+        );
+    }
+
     @PostMapping
     public ResponseEntity<AlunoDTO> criaAluno(@RequestBody AlunoDTO dto) {
         return alunoService.criaAluno(dto).map(a -> ResponseEntity.created(URI.create("/aluno/" + a.getId())).body(a))
