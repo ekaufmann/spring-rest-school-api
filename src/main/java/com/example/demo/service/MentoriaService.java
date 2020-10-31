@@ -60,15 +60,22 @@ public class MentoriaService {
 
     public Optional<MentoriaDTOResponse> modificaMentoria(Long id, MentoriaDTO mentoriaModificada) {
         Optional<Mentoria> mentoria = getMentoriaById(id);
+        Long alunoId = mentoriaModificada.getAlunoId();
+        Long mentorId = mentoriaModificada.getMentorId();
         mentoria.ifPresent(m -> {
-            Optional<Aluno> aluno = alunoService.getAlunoById(mentoriaModificada.getAlunoId());
-            Optional<Mentor> mentor = mentorService.getMentorById(mentoriaModificada.getMentorId());
+            Optional<Aluno> aluno = Optional.empty();
+            Optional<Mentor> mentor = Optional.empty();
+            if(alunoId != null) {
+                aluno = alunoService.getAlunoById(alunoId);
+            }
+            if(mentorId != null) {
+                 mentor = mentorService.getMentorById(mentorId);
+            }
 
             m.setAluno(aluno.orElseGet(m::getAluno));
             m.setMentor(mentor.orElseGet(m::getMentor));
-
-            mentoriaRepository.save(m);
         });
+        mentoria.map(mentoriaRepository::save);
 
         return mentoria.map(MentoriaMapper::convertMentoriaToDTOResponse);
     }

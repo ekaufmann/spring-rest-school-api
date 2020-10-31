@@ -58,12 +58,12 @@ public class AlunoService {
 
     @Transactional
     public Optional<AlunoDTO> deleteAluno(Long id) {
-        return alunoRepository.logicalDelete(id) == 1 ? getAluno(id) : Optional.empty();
+        return alunoRepository.logicalDelete(id) != 0 ? getAluno(id) : Optional.empty();
     }
 
     @Transactional
     public Optional<AlunoDTO> reativarAluno(Long id) {
-        return alunoRepository.reativarAluno(id) == 1 ? getAluno(id) : Optional.empty();
+        return alunoRepository.reativarAluno(id) != 0 ? getAluno(id) : Optional.empty();
     }
 
     public Optional<AlunoDTO> modificaAluno(Long id, AlunoDTO alunoModificado) {

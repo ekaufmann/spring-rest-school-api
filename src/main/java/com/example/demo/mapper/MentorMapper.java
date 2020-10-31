@@ -7,7 +7,7 @@ public class MentorMapper {
 
     public static MentorDTO convertMentorToDTO(Mentor mentor) {
         if(mentor != null) {
-            return new MentorDTO(mentor.getId(), mentor.getNome());
+            return new MentorDTO(mentor.getId(), mentor.getNome(), mentor.getActive());
         }
         return null;
     }

@@ -22,7 +22,7 @@ public class Mentoria {
     @JoinColumn(name = "alunoId", nullable = false)
     private Aluno aluno;
 
-    private Boolean active;
+    private Boolean active = true;
 
     public Mentoria(Mentor mentor, Aluno aluno) {
         this.mentor = mentor;
