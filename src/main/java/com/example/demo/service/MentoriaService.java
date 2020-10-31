@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.demo.mapper.MentoriaMapper.convertMentoriaToDTOResponse;
-
 @Service
 public class MentoriaService {
 
@@ -35,12 +33,10 @@ public class MentoriaService {
                 .collect(Collectors.toList());
     }
 
-    public Mentoria getMentoriaById(Long id) { return mentoriaRepository.findById(id).orElse(null); }
+    public Optional<Mentoria> getMentoriaById(Long id) { return mentoriaRepository.findById(id); }
 
     public Optional<MentoriaDTOResponse> getMentoria(Long id) {
-        return Optional.ofNullable(
-                convertMentoriaToDTOResponse(getMentoriaById(id))
-        );
+        return getMentoriaById(id).map(MentoriaMapper::convertMentoriaToDTOResponse);
     }
 
     public Optional<MentoriaDTOResponse> criaMentoria(MentoriaDTO dto) {
@@ -57,13 +53,11 @@ public class MentoriaService {
     }
 
     public Optional<MentoriaDTOResponse> deleteMentoria(Long id) {
-        Optional<Mentoria> mentoria = Optional.ofNullable(getMentoriaById(id));
-        mentoria.ifPresent(mentoriaRepository::delete);
-        return mentoria.map(MentoriaMapper::convertMentoriaToDTOResponse);
+        return mentoriaRepository.logicalDelete(id) == 1 ? getMentoriaById(id).map(MentoriaMapper::convertMentoriaToDTOResponse) : Optional.empty();
     }
 
     public Optional<MentoriaDTOResponse> modificaMentoria(Long id, MentoriaDTO mentoriaModificada) {
-        Optional<Mentoria> mentoria = Optional.ofNullable(getMentoriaById(id));
+        Optional<Mentoria> mentoria = getMentoriaById(id);
         mentoria.ifPresent(m -> {
             Optional<Aluno> aluno = alunoService.getAlunoById(mentoriaModificada.getAlunoId());
             Optional<Mentor> mentor = mentorService.getMentorById(mentoriaModificada.getMentorId());

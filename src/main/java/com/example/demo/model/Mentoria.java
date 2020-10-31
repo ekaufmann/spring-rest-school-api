@@ -22,6 +22,8 @@ public class Mentoria {
     @JoinColumn(name = "alunoId", nullable = false)
     private Aluno aluno;
 
+    private Boolean active;
+
     public Mentoria(Mentor mentor, Aluno aluno) {
         this.mentor = mentor;
         this.aluno = aluno;
