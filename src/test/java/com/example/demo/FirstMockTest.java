@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.dto.AlunoDTO;
+import com.example.demo.mapper.AlunoMapper;
 import com.example.demo.model.Aluno;
 import com.example.demo.repository.AlunoRepository;
 import com.example.demo.service.AlunoService;
@@ -26,14 +27,15 @@ public class FirstMockTest {
     @Test
     public void test() {
         var id = 1L;
-        Mockito.when(alunoRepository.findById(id)).thenReturn(Optional.of(new Aluno("t", "teste")));
+        Aluno aluno = new Aluno("t", "teste");
+        Mockito.when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
         Optional<AlunoDTO> alunoByIndex = this.alunoService.getAluno(id);
 
         Assertions.assertTrue(alunoByIndex.isPresent());
 
         AlunoDTO alunoDTO = alunoByIndex.get();
 
-        Assertions.assertEquals("t", alunoDTO.getNome());
-        Assertions.assertEquals("teste", alunoDTO.getClasse());
+        Assertions.assertEquals(alunoDTO.getNome(), aluno.getNome());
+        Assertions.assertEquals(alunoDTO.getClasse(), aluno.getClasse());
     }
 }

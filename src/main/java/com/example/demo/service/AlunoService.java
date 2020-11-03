@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.demo.mapper.AlunoMapper.*;
-
 @Service
 public class AlunoService {
 
     @Autowired
-    AlunoRepository alunoRepository;
+    private AlunoRepository alunoRepository;
+
+    @Autowired
+    private AlunoMapper alunoMapper;
 
     public Optional<List<AlunoDTO>> getAlunos(Boolean active) {
         List<Aluno> alunos;
@@ -51,7 +52,7 @@ public class AlunoService {
             return Optional.empty();
         }
 
-        Optional<Aluno> aluno = Optional.of(convertDTOToAluno(alunoDTO));
+        Optional<Aluno> aluno = Optional.of(alunoMapper.convertDTOToAluno(alunoDTO));
         aluno.ifPresent(alunoRepository::save);
         return aluno.map(AlunoMapper::convertAlunoToDTO);
     }

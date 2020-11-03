@@ -3,9 +3,9 @@ package com.example.demo.mapper;
 import com.example.demo.dto.*;
 import com.example.demo.model.Avaliacao;
 import com.example.demo.model.Disciplina;
+import com.example.demo.mapper.AlunoMapper;
 
 import static com.example.demo.mapper.DisciplinaMapper.convertDisciplinaToDTOResponse;
-import static com.example.demo.mapper.AlunoMapper.convertAlunoToDTO;
 import static com.example.demo.mapper.MentorMapper.convertMentorToDTO;
 
 public class AvaliacaoMapper {
@@ -13,7 +13,7 @@ public class AvaliacaoMapper {
     public static AvaliacaoDTOResponse convertAvaliacaoToDTOResponse(Avaliacao avaliacao) {
         if(avaliacao != null) {
             DisciplinaDTOResponse disciplina = convertDisciplinaToDTOResponse(avaliacao.getDisciplina());
-            AlunoDTO aluno = convertAlunoToDTO(avaliacao.getAluno());
+            AlunoDTO aluno = AlunoMapper.convertAlunoToDTO(avaliacao.getAluno());
             MentorDTO mentor = convertMentorToDTO(avaliacao.getMentor());
 
             return new AvaliacaoDTOResponse(

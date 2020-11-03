@@ -18,22 +18,22 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.demo.mapper.AvaliacaoMapper.*;
+import static com.example.demo.mapper.AvaliacaoMapper.convertDTOToAvaliacao;
 
 @Service
 public class AvaliacaoService {
 
     @Autowired
-    AvaliacaoRepository avaliacaoRepository;
+    private AvaliacaoRepository avaliacaoRepository;
 
     @Autowired
-    DisciplinaService disciplinaService;
+    private DisciplinaService disciplinaService;
 
     @Autowired
-    AlunoService alunoService;
+    private AlunoService alunoService;
 
     @Autowired
-    MentorService mentorService;
+    private MentorService mentorService;
 
     public Optional<List<AvaliacaoDTOResponse>> getAvaliacoes() {
         return Optional.of(avaliacaoRepository.findAll()
