@@ -49,7 +49,7 @@ public class Programa {
         disciplinas.remove(disciplina);
     }
 
-    public Boolean findDisciplina(Disciplina disciplina) {
+    public Boolean containsDisciplina(Disciplina disciplina) {
         return disciplinas.contains(disciplina);
     }
 }

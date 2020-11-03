@@ -74,16 +74,14 @@ public class ProgramaService {
         return programa.map(ProgramaMapper::convertProgramaToDTOResponse);
     }
 
-    public Optional<ProgramaDTOResponse> addOuRemoveDisciplina(Long programaId, Long disciplinaId, Long operacao) {
+    public Optional<ProgramaDTOResponse> addOrDeleteDisciplina(Long programaId, Long disciplinaId, Boolean active) {
         Optional<Programa> programa = getProgramaById(programaId);
         Optional<Disciplina> disciplina = disciplinaService.getDisciplinaById(disciplinaId);
         programa.ifPresent(
                 p -> {
                     disciplina.ifPresent(d -> {
-                        if (operacao == 1) {
-                            p.addDisciplina(d);
-                        } else {
-                            p.removeDisciplina(d);
+                        if (p.containsDisciplina(d)) {
+                            d.setActive(active);
                         }
                         programaRepository.save(p);
                     });

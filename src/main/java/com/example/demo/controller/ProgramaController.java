@@ -60,11 +60,10 @@ public class ProgramaController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // TODO Add and Remove disciplina based on the given index
     @PutMapping("/disciplinas")
-    public ResponseEntity<ProgramaDTOResponse> addDisciplina(@RequestParam Long programaId, @RequestParam Long disciplinaId, @RequestParam Long operacao) {
+    public ResponseEntity<ProgramaDTOResponse> addOrDeleteDisciplina(@RequestParam Long programaId, @RequestParam Long disciplinaId, @RequestParam Boolean active) {
         // operacao == 1 ? adiciona ; operacao == 0 ? remove;
-        return programaService.addOuRemoveDisciplina(programaId, disciplinaId, operacao)
+        return programaService.addOrDeleteDisciplina(programaId, disciplinaId, active)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
