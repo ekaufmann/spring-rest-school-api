@@ -1,8 +1,10 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.DisciplinaDTOResponse;
 import com.example.demo.dto.ProgramaDTO;
 import com.example.demo.dto.ProgramaDTOResponse;
 import com.example.demo.mapper.ProgramaMapper;
+import com.example.demo.model.Disciplina;
 import com.example.demo.model.Programa;
 import com.example.demo.repository.ProgramaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.demo.mapper.ProgramaMapper.convertDTOToPrograma;
@@ -20,6 +23,9 @@ public class ProgramaService {
 
     @Autowired
     private ProgramaRepository programaRepository;
+
+    @Autowired
+    private DisciplinaService disciplinaService;
 
     public Optional<List<ProgramaDTOResponse>> getProgramas() {
         return Optional.of(
@@ -65,6 +71,24 @@ public class ProgramaService {
 
                     programaRepository.save(p);
                 });
+        return programa.map(ProgramaMapper::convertProgramaToDTOResponse);
+    }
+
+    public Optional<ProgramaDTOResponse> addOuRemoveDisciplina(Long programaId, Long disciplinaId, Long operacao) {
+        Optional<Programa> programa = getProgramaById(programaId);
+        Optional<Disciplina> disciplina = disciplinaService.getDisciplinaById(disciplinaId);
+        programa.ifPresent(
+                p -> {
+                    disciplina.ifPresent(d -> {
+                        if (operacao == 1) {
+                            p.addDisciplina(d);
+                        } else {
+                            p.removeDisciplina(d);
+                        }
+                        programaRepository.save(p);
+                    });
+                }
+        );
         return programa.map(ProgramaMapper::convertProgramaToDTOResponse);
     }
 }

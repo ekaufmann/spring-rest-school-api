@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.DisciplinaDTOResponse;
 import com.example.demo.dto.MentoriaDTOResponse;
 import com.example.demo.dto.ProgramaDTO;
 import com.example.demo.dto.ProgramaDTOResponse;
@@ -60,4 +61,11 @@ public class ProgramaController {
     }
 
     // TODO Add and Remove disciplina based on the given index
+    @PutMapping("/disciplinas")
+    public ResponseEntity<ProgramaDTOResponse> addDisciplina(@RequestParam Long programaId, @RequestParam Long disciplinaId, @RequestParam Long operacao) {
+        // operacao == 1 ? adiciona ; operacao == 0 ? remove;
+        return programaService.addOuRemoveDisciplina(programaId, disciplinaId, operacao)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
 }

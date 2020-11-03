@@ -4,6 +4,7 @@ import com.example.demo.dto.MentorDTO;
 import com.example.demo.model.Mentor;
 import com.example.demo.service.MentorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,15 @@ public class MentorController {
         return mentorService.getMentor(id)
                             .map(ResponseEntity::ok)
                             .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/reativar")
+    public ResponseEntity<MentorDTO> reativarMentor(@RequestParam Long id) {
+        return mentorService.reativarMentor(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(
+                        () -> ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+                );
     }
 
     @PostMapping

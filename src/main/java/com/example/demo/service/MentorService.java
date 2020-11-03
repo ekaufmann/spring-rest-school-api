@@ -6,6 +6,7 @@ import com.example.demo.repository.MentorRepository;
 import com.example.demo.mapper.MentorMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,11 +41,14 @@ public class MentorService {
         return convertMentorToDTO(mentorRepository.save(mentor));
     }
 
+    @Transactional
     public Optional<MentorDTO> deleteMentor(Long id) {
-        Optional<Mentor> mentor = getMentorById(id);
-        mentor.ifPresent(mentorRepository::delete);
+        return mentorRepository.logicalDelete(id) != 0 ? getMentor(id) : Optional.empty();
+    }
 
-        return mentor.map(MentorMapper::convertMentorToDTO);
+    @Transactional
+    public Optional<MentorDTO> reativarMentor(Long id) {
+        return mentorRepository.reativarMentor(id) != 0 ? getMentor(id) : Optional.empty();
     }
 
     public Optional<MentorDTO> modificaMentor(Long id, MentorDTO mentorModificado) {

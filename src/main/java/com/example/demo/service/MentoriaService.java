@@ -55,7 +55,7 @@ public class MentoriaService {
 
     @Transactional
     public Optional<MentoriaDTOResponse> deleteMentoria(Long id) {
-        return mentoriaRepository.logicalDelete(id) == 1 ? getMentoriaById(id).map(MentoriaMapper::convertMentoriaToDTOResponse) : Optional.empty();
+        return mentoriaRepository.logicalDelete(id) != 0 ? getMentoriaById(id).map(MentoriaMapper::convertMentoriaToDTOResponse) : Optional.empty();
     }
 
     public Optional<MentoriaDTOResponse> modificaMentoria(Long id, MentoriaDTO mentoriaModificada) {

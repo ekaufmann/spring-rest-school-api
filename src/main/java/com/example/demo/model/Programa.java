@@ -40,4 +40,16 @@ public class Programa {
     public Set<Disciplina> getCopyOfDisciplinas() {
         return Set.copyOf(disciplinas);
     }
+
+    public void addDisciplina(Disciplina disciplina) {
+        disciplinas.add(disciplina);
+    }
+
+    public void removeDisciplina(Disciplina disciplina) {
+        disciplinas.remove(disciplina);
+    }
+
+    public Boolean findDisciplina(Disciplina disciplina) {
+        return disciplinas.contains(disciplina);
+    }
 }

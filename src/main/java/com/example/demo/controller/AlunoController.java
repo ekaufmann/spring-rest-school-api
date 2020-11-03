@@ -36,9 +36,11 @@ public class AlunoController {
 
     @GetMapping("/reativar")
     public ResponseEntity<AlunoDTO> reativarAluno(@RequestParam Long id) {
-        return alunoService.reativarAluno(id).map(ResponseEntity::ok).orElseGet(
-                () -> ResponseEntity.status(HttpStatus.FORBIDDEN).build()
-        );
+        return alunoService.reativarAluno(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(
+                        () -> ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+                );
     }
 
     @PostMapping
