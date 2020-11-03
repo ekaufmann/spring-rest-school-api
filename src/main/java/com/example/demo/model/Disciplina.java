@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -28,14 +30,23 @@ public class Disciplina {
     private Set<Programa> programas;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "disciplina")
-    private Set<Avaliacao> avaliacoes;
+    private Set<Avaliacao> avaliacoes = new HashSet<>();
 
     public Disciplina(String nome) {
         this.nome = nome;
     }
 
-    /*
-    public void calculaMedia() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Disciplina that = (Disciplina) o;
+        return id.equals(that.id) &&
+                nome.equals(that.nome);
+    }
 
-    }*/
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nome);
+    }
 }

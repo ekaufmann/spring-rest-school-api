@@ -60,7 +60,7 @@ public class ProgramaController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/disciplinas")
+    @PatchMapping("/disciplinas")
     public ResponseEntity<ProgramaDTOResponse> addOrDeleteDisciplina(@RequestParam Long programaId, @RequestParam Long disciplinaId, @RequestParam Boolean active) {
         // operacao == 1 ? adiciona ; operacao == 0 ? remove;
         return programaService.addOrDeleteDisciplina(programaId, disciplinaId, active)

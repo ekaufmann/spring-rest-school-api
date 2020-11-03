@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,11 +77,14 @@ public class ProgramaService {
     public Optional<ProgramaDTOResponse> addOrDeleteDisciplina(Long programaId, Long disciplinaId, Boolean active) {
         Optional<Programa> programa = getProgramaById(programaId);
         Optional<Disciplina> disciplina = disciplinaService.getDisciplinaById(disciplinaId);
+
         programa.ifPresent(
                 p -> {
                     disciplina.ifPresent(d -> {
                         if (p.containsDisciplina(d)) {
                             d.setActive(active);
+                        } else {
+                            p.addDisciplina(d);
                         }
                         programaRepository.save(p);
                     });

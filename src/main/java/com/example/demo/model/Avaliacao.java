@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -44,5 +45,21 @@ public class Avaliacao {
         this.conteudo = conteudo;
         this.dataRealizacao = dataRealizacao;
         this.disciplina = disciplina;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Avaliacao avaliacao = (Avaliacao) o;
+        return Objects.equals(id, avaliacao.id) &&
+                conteudo.equals(avaliacao.conteudo) &&
+                dataRealizacao.equals(avaliacao.dataRealizacao) &&
+                disciplina.equals(avaliacao.disciplina);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, conteudo, dataRealizacao, disciplina);
     }
 }

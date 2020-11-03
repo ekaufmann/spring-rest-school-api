@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -29,7 +30,7 @@ public class Programa {
     @JoinTable(name = "programa_disciplina",
                joinColumns = {@JoinColumn(name = "programaId", nullable = false)},
                     inverseJoinColumns = {@JoinColumn(name = "disciplinaId", nullable = false)})
-    private Set<Disciplina> disciplinas;
+    private Set<Disciplina> disciplinas = new HashSet<>();
 
     public Programa(String nome, LocalDate dataInicio, LocalDate dataFim) {
         this.nome = nome;
