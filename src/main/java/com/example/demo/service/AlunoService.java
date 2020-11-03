@@ -32,7 +32,7 @@ public class AlunoService {
 
         return Optional.of(alunos
                 .parallelStream()
-                .map(AlunoMapper::convertAlunoToDTO)
+                .map(alunoMapper::convertAlunoToDTO)
                 .collect(Collectors.toList()));
     }
 
@@ -41,7 +41,7 @@ public class AlunoService {
     }
 
     public Optional<AlunoDTO> getAluno(Long id) {
-        return getAlunoById(id).map(AlunoMapper::convertAlunoToDTO);
+        return getAlunoById(id).map(alunoMapper::convertAlunoToDTO);
     }
 
     // TODO Find a better way to validate
@@ -54,7 +54,7 @@ public class AlunoService {
 
         Optional<Aluno> aluno = Optional.of(alunoMapper.convertDTOToAluno(alunoDTO));
         aluno.ifPresent(alunoRepository::save);
-        return aluno.map(AlunoMapper::convertAlunoToDTO);
+        return aluno.map(alunoMapper::convertAlunoToDTO);
     }
 
     @Transactional
@@ -76,6 +76,6 @@ public class AlunoService {
             alunoRepository.save(a);
         });
 
-        return aluno.map(AlunoMapper::convertAlunoToDTO);
+        return aluno.map(alunoMapper::convertAlunoToDTO);
     }
 }

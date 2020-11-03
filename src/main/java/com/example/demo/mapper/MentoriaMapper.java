@@ -1,14 +1,24 @@
 package com.example.demo.mapper;
 
+import com.example.demo.dto.MentoriaDTO;
 import com.example.demo.dto.MentoriaDTOResponse;
 import com.example.demo.model.Mentoria;
+import org.mapstruct.Mapper;
 
-import static com.example.demo.mapper.AlunoMapper.convertAlunoToDTO;
-import static com.example.demo.mapper.MentorMapper.convertMentorToDTO;
+@Mapper(componentModel = "spring")
+public interface MentoriaMapper {
 
-public class MentoriaMapper {
+    Mentoria convertDTOToMentoria(MentoriaDTO mentoriaDTO);
 
-    public static MentoriaDTOResponse convertMentoriaToDTOResponse(Mentoria mentoria) {
+    Mentoria convertDTOResponseToMentoria(MentoriaDTOResponse mentoriaDTOResponse);
+
+    MentoriaDTO convertMentoriaToDTO(Mentoria mentora);
+
+    MentoriaDTOResponse convertMentoriaToDTOResponse(Mentoria mentoria);
+
+}
+
+/*    public static MentoriaDTOResponse convertMentoriaToDTOResponse(Mentoria mentoria) {
         if(mentoria != null) {
             return new MentoriaDTOResponse(mentoria.getId(),
                     convertMentorToDTO(mentoria.getMentor()),
@@ -16,5 +26,4 @@ public class MentoriaMapper {
             );
         }
         return null;
-    }
-}
+    }*/

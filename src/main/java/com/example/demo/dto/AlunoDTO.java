@@ -8,7 +8,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-//@NoArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class AlunoDTO {
 
     private Long id;
@@ -20,16 +21,14 @@ public class AlunoDTO {
     private String classe;
     private Boolean active;
 
-    public AlunoDTO(){}
-
     public AlunoDTO(String nome, String classe) {
         this.nome = nome;
         this.classe = classe;
     }
-
+/*
     public AlunoDTO(Long id, String nome, String classe, Boolean active) {
         this(nome, classe);
         this.id = id;
         this.active = active;
-    }
+    }*/
 }

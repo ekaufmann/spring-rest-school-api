@@ -12,19 +12,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.demo.mapper.MentorMapper.convertMentorToDTO;
-
 @Service
 public class MentorService {
 
     @Autowired
     private MentorRepository mentorRepository;
 
+    @Autowired
+    private MentorMapper mentorMapper;
+
     public Optional<List<MentorDTO>> getMentores() {
         return Optional.of(
                 mentorRepository.findAll()
                 .parallelStream()
-                .map(MentorMapper::convertMentorToDTO)
+                .map(mentorMapper::convertMentorToDTO)
                 .collect(Collectors.toList())
         );
     }
@@ -34,11 +35,11 @@ public class MentorService {
     }
 
     public Optional<MentorDTO> getMentor(Long id) {
-        return getMentorById(id).map(MentorMapper::convertMentorToDTO);
+        return getMentorById(id).map(mentorMapper::convertMentorToDTO);
     }
 
     public MentorDTO criaMentor(Mentor mentor) {
-        return convertMentorToDTO(mentorRepository.save(mentor));
+        return mentorMapper.convertMentorToDTO(mentorRepository.save(mentor));
     }
 
     @Transactional
@@ -59,6 +60,6 @@ public class MentorService {
             mentorRepository.save(m);
         });
 
-        return mentor.map(MentorMapper::convertMentorToDTO);
+        return mentor.map(mentorMapper::convertMentorToDTO);
     }
 }

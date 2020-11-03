@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.DisciplinaDTOResponse;
 import com.example.demo.dto.ProgramaDTO;
 import com.example.demo.dto.ProgramaDTOResponse;
 import com.example.demo.mapper.ProgramaMapper;
@@ -13,10 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.example.demo.mapper.ProgramaMapper.convertDTOToPrograma;
 
 @Service
 public class ProgramaService {
@@ -25,13 +21,16 @@ public class ProgramaService {
     private ProgramaRepository programaRepository;
 
     @Autowired
+    private ProgramaMapper programaMapper;
+
+    @Autowired
     private DisciplinaService disciplinaService;
 
     public Optional<List<ProgramaDTOResponse>> getProgramas() {
         return Optional.of(
                 programaRepository.findAll()
                                   .parallelStream()
-                                  .map(ProgramaMapper::convertProgramaToDTOResponse)
+                                  .map(programaMapper::convertProgramaToDTOResponse)
                                   .collect(Collectors.toList()));
     }
 
@@ -40,21 +39,21 @@ public class ProgramaService {
     }
 
     public Optional<ProgramaDTOResponse> getPrograma(Long id) {
-        return getProgramaById(id).map(ProgramaMapper::convertProgramaToDTOResponse);
+        return getProgramaById(id).map(programaMapper::convertProgramaToDTOResponse);
     }
 
 
     public Optional<ProgramaDTOResponse> criaPrograma(ProgramaDTO programaDTO) {
-        Optional<Programa> programa = Optional.of(convertDTOToPrograma(programaDTO));
+        Optional<Programa> programa = Optional.of(programaMapper.convertDTOToPrograma(programaDTO));
         programa.ifPresent(programaRepository::save);
-        return programa.map(ProgramaMapper::convertProgramaToDTOResponse);
+        return programa.map(programaMapper::convertProgramaToDTOResponse);
     }
 
 
     public Optional<ProgramaDTOResponse> deletePrograma(Long id) {
         Optional<Programa> programa = getProgramaById(id);
         programa.ifPresent(programaRepository::delete);
-        return programa.map(ProgramaMapper::convertProgramaToDTOResponse);
+        return programa.map(programaMapper::convertProgramaToDTOResponse);
     }
 
     public Optional<ProgramaDTOResponse> modificaPrograma(Long id, ProgramaDTO programaModificado) {
@@ -71,7 +70,7 @@ public class ProgramaService {
 
                     programaRepository.save(p);
                 });
-        return programa.map(ProgramaMapper::convertProgramaToDTOResponse);
+        return programa.map(programaMapper::convertProgramaToDTOResponse);
     }
 
     public Optional<ProgramaDTOResponse> addOrDeleteDisciplina(Long programaId, Long disciplinaId, Boolean active) {
@@ -87,6 +86,6 @@ public class ProgramaService {
                     });
                 }
         );
-        return programa.map(ProgramaMapper::convertProgramaToDTOResponse);
+        return programa.map(programaMapper::convertProgramaToDTOResponse);
     }
 }

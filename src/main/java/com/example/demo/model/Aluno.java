@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,7 +8,8 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Data
-//@NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Aluno extends Pessoa {
 
@@ -26,8 +28,6 @@ public class Aluno extends Pessoa {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "aluno")
     private Set<Avaliacao> avaliacoes;
-
-    public Aluno() {}
 
     public Aluno(String nome, String classe) {
         super(nome);

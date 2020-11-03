@@ -22,6 +22,9 @@ public class MentoriaService {
     MentoriaRepository mentoriaRepository;
 
     @Autowired
+    MentoriaMapper mentoriaMapper;
+
+    @Autowired
     MentorService mentorService;
 
     @Autowired
@@ -30,14 +33,14 @@ public class MentoriaService {
     public List<MentoriaDTOResponse> getMentorias() {
         List<Mentoria> mentorias = mentoriaRepository.findAll();
         return mentorias.parallelStream()
-                .map(MentoriaMapper::convertMentoriaToDTOResponse)
+                .map(mentoriaMapper::convertMentoriaToDTOResponse)
                 .collect(Collectors.toList());
     }
 
     public Optional<Mentoria> getMentoriaById(Long id) { return mentoriaRepository.findById(id); }
 
     public Optional<MentoriaDTOResponse> getMentoria(Long id) {
-        return getMentoriaById(id).map(MentoriaMapper::convertMentoriaToDTOResponse);
+        return getMentoriaById(id).map(mentoriaMapper::convertMentoriaToDTOResponse);
     }
 
     public Optional<MentoriaDTOResponse> criaMentoria(MentoriaDTO dto) {
@@ -50,12 +53,12 @@ public class MentoriaService {
             mentoriaOpt = Optional.of(mentoriaRepository.save(mentoria));
         }
 
-        return mentoriaOpt.map(MentoriaMapper::convertMentoriaToDTOResponse);
+        return mentoriaOpt.map(mentoriaMapper::convertMentoriaToDTOResponse);
     }
 
     @Transactional
     public Optional<MentoriaDTOResponse> deleteMentoria(Long id) {
-        return mentoriaRepository.logicalDelete(id) != 0 ? getMentoriaById(id).map(MentoriaMapper::convertMentoriaToDTOResponse) : Optional.empty();
+        return mentoriaRepository.logicalDelete(id) != 0 ? getMentoriaById(id).map(mentoriaMapper::convertMentoriaToDTOResponse) : Optional.empty();
     }
 
     public Optional<MentoriaDTOResponse> modificaMentoria(Long id, MentoriaDTO mentoriaModificada) {
@@ -77,6 +80,6 @@ public class MentoriaService {
         });
         mentoria.map(mentoriaRepository::save);
 
-        return mentoria.map(MentoriaMapper::convertMentoriaToDTOResponse);
+        return mentoria.map(mentoriaMapper::convertMentoriaToDTOResponse);
     }
 }

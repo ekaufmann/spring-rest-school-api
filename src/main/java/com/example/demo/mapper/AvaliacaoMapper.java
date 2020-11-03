@@ -6,15 +6,14 @@ import com.example.demo.model.Disciplina;
 import com.example.demo.mapper.AlunoMapper;
 
 import static com.example.demo.mapper.DisciplinaMapper.convertDisciplinaToDTOResponse;
-import static com.example.demo.mapper.MentorMapper.convertMentorToDTO;
 
 public class AvaliacaoMapper {
 
     public static AvaliacaoDTOResponse convertAvaliacaoToDTOResponse(Avaliacao avaliacao) {
         if(avaliacao != null) {
             DisciplinaDTOResponse disciplina = convertDisciplinaToDTOResponse(avaliacao.getDisciplina());
-            AlunoDTO aluno = AlunoMapper.convertAlunoToDTO(avaliacao.getAluno());
-            MentorDTO mentor = convertMentorToDTO(avaliacao.getMentor());
+            AlunoDTO aluno = null;
+            MentorDTO mentor = null;
 
             return new AvaliacaoDTOResponse(
                     avaliacao.getId(),
