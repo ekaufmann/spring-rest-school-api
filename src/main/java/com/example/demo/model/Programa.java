@@ -26,7 +26,7 @@ public class Programa {
     @Column(name = "dataFim")
     private LocalDate dataFim;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "programa_disciplina",
                joinColumns = {@JoinColumn(name = "programaId", nullable = false)},
                     inverseJoinColumns = {@JoinColumn(name = "disciplinaId", nullable = false)})

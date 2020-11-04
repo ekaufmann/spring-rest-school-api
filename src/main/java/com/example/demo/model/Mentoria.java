@@ -14,11 +14,11 @@ public class Mentoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.ALL})
+    @ManyToOne(optional = false)
     @JoinColumn(name = "mentorId", nullable = false)
     private Mentor mentor;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.ALL})
+    @ManyToOne(optional = false)
     @JoinColumn(name = "alunoId", nullable = false)
     private Aluno aluno;
 

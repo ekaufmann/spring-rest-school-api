@@ -36,7 +36,7 @@ public class AlunoService {
                 .collect(Collectors.toList()));
     }
 
-    protected Optional<Aluno> getAlunoById(Long id) {
+    public Optional<Aluno> getAlunoById(Long id) {
         return alunoRepository.findById(id);
     }
 

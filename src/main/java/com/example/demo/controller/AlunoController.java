@@ -5,8 +5,10 @@ import com.example.demo.service.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -44,13 +46,12 @@ public class AlunoController {
     }
 
     @PostMapping
-    public ResponseEntity<AlunoDTO> criaAluno(@RequestBody AlunoDTO dto) {
+    public ResponseEntity<AlunoDTO> criaAluno(@RequestBody @Validated @NotNull AlunoDTO dto) {
         return alunoService.criaAluno(dto).map(a -> ResponseEntity.created(URI.create("/aluno/" + a.getId())).body(a))
                 .orElseGet( //new ResponseEntity<>((AlunoDTO) null, HttpStatus.FORBIDDEN)
                 () -> {
-                    dto.setId(0L);
-                    dto.setNome("Aluno já existe!");
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(dto);
+                    AlunoDTO dtoResponse = new AlunoDTO("Aluno já existe!", "-");
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(dtoResponse);
                 });
     }
 

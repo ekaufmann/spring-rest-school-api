@@ -29,15 +29,15 @@ public class Avaliacao {
 
     private Boolean active = true;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "disciplinaId")
     private Disciplina disciplina;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "alunoId")
     private Aluno aluno;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "mentorId")
     private Mentor mentor;
 

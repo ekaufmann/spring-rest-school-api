@@ -26,10 +26,10 @@ public class Disciplina {
 
     private Float media = 7.0f;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "disciplinas")
+    @ManyToMany(mappedBy = "disciplinas")
     private Set<Programa> programas;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "disciplina")
+    @OneToMany(mappedBy = "disciplina")
     private Set<Avaliacao> avaliacoes = new HashSet<>();
 
     public Disciplina(String nome) {

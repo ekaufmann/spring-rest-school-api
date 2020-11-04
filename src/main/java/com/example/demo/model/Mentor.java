@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Set;
@@ -17,10 +16,10 @@ public class Mentor extends Pessoa {
 
     private Boolean active = true;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "mentor")
+    @OneToMany(mappedBy = "mentor")
     private Set<Mentoria> mentorias;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "mentor")
+    @OneToMany(mappedBy = "mentor")
     private Set<Avaliacao> avaliacoes;
 
     public Mentor(String nome) {

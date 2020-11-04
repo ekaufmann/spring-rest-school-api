@@ -18,7 +18,10 @@ public class AlunoDTO {
     @NotNull(message = "Nome cannot be null")
     private String nome;
 
+    @Size(min = 2, max = 64)
+    @NotNull(message = "Classe cannot be null")
     private String classe;
+
     private Boolean active;
 
     public AlunoDTO(String nome, String classe) {
