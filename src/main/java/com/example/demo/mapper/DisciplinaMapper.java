@@ -3,10 +3,17 @@ package com.example.demo.mapper;
 import com.example.demo.dto.DisciplinaDTO;
 import com.example.demo.dto.DisciplinaDTOResponse;
 import com.example.demo.model.Disciplina;
+import org.mapstruct.Mapper;
 
-public class DisciplinaMapper {
+@Mapper(componentModel = "spring")
+public interface DisciplinaMapper {
 
-    public static DisciplinaDTOResponse convertDisciplinaToDTOResponse(Disciplina disciplina) {
+    DisciplinaDTOResponse convertDisciplinaToDTOResponse(Disciplina disciplina);
+
+    Disciplina convertDTOToDisciplina(DisciplinaDTO disciplinaDTO);
+}
+
+    /*public static DisciplinaDTOResponse convertDisciplinaToDTOResponse(Disciplina disciplina) {
         if(disciplina != null) {
             return new DisciplinaDTOResponse(disciplina.getId(), disciplina.getNome(), disciplina.getActive(), disciplina.getMedia());
         }
@@ -18,5 +25,4 @@ public class DisciplinaMapper {
             return new Disciplina(disciplinaDTO.getNome());
         }
         return null;
-    }
-}
+    }*/

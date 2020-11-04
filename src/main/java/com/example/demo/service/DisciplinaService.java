@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.dto.DisciplinaDTO;
 import com.example.demo.dto.DisciplinaDTOResponse;
-import com.example.demo.mapper.AlunoMapper;
 import com.example.demo.mapper.DisciplinaMapper;
 import com.example.demo.model.Disciplina;
 import com.example.demo.repository.DisciplinaRepository;
@@ -14,13 +13,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.demo.mapper.DisciplinaMapper.*;
-
 @Service
 public class DisciplinaService {
 
     @Autowired
-    DisciplinaRepository disciplinaRepository;
+    private DisciplinaRepository disciplinaRepository;
+
+    @Autowired
+    private DisciplinaMapper disciplinaMapper;
 
     public Optional<List<DisciplinaDTOResponse>> getDisciplinas(Boolean active) {
 
@@ -28,13 +28,13 @@ public class DisciplinaService {
             return Optional.of(
                     disciplinaRepository.findAllByActive(active)
                             .parallelStream()
-                            .map(DisciplinaMapper::convertDisciplinaToDTOResponse)
+                            .map(disciplinaMapper::convertDisciplinaToDTOResponse)
                             .collect(Collectors.toList())
             );
         }
         return Optional.of(disciplinaRepository.findAll()
                 .parallelStream()
-                .map(DisciplinaMapper::convertDisciplinaToDTOResponse)
+                .map(disciplinaMapper::convertDisciplinaToDTOResponse)
                 .collect(Collectors.toList()));
     }
 
@@ -43,14 +43,14 @@ public class DisciplinaService {
     }
 
     public Optional<DisciplinaDTOResponse> getDisciplina(Long id) {
-        return getDisciplinaById(id).map(DisciplinaMapper::convertDisciplinaToDTOResponse);
+        return getDisciplinaById(id).map(disciplinaMapper::convertDisciplinaToDTOResponse);
     }
 
 
     public Optional<DisciplinaDTOResponse> criaDisciplina(DisciplinaDTO disciplinaDTO) {
-        Optional<Disciplina> disciplina = Optional.of(convertDTOToDisciplina(disciplinaDTO));
+        Optional<Disciplina> disciplina = Optional.of(disciplinaMapper.convertDTOToDisciplina(disciplinaDTO));
         disciplina.ifPresent(disciplinaRepository::save);
-        return disciplina.map(DisciplinaMapper::convertDisciplinaToDTOResponse);
+        return disciplina.map(disciplinaMapper::convertDisciplinaToDTOResponse);
     }
 
     @Transactional
@@ -75,6 +75,6 @@ public class DisciplinaService {
                     disciplinaRepository.save(d);
                 }
         );
-        return disciplina.map(DisciplinaMapper::convertDisciplinaToDTOResponse);
+        return disciplina.map(disciplinaMapper::convertDisciplinaToDTOResponse);
     }
 }
