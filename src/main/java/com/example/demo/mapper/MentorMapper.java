@@ -11,10 +11,3 @@ public interface MentorMapper {
 
     MentorDTO convertMentorToDTO(Mentor mentor);
 }
-
-    /*static MentorDTO convertMentorToDTO(Mentor mentor) {
-        if(mentor != null) {
-            return new MentorDTO(mentor.getId(), mentor.getNome(), mentor.getActive());
-        }
-        return null;
-    }*/

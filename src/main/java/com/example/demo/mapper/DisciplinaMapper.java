@@ -12,17 +12,3 @@ public interface DisciplinaMapper {
 
     Disciplina convertDTOToDisciplina(DisciplinaDTO disciplinaDTO);
 }
-
-    /*public static DisciplinaDTOResponse convertDisciplinaToDTOResponse(Disciplina disciplina) {
-        if(disciplina != null) {
-            return new DisciplinaDTOResponse(disciplina.getId(), disciplina.getNome(), disciplina.getActive(), disciplina.getMedia());
-        }
-        return null;
-    }
-
-    public static Disciplina convertDTOToDisciplina(DisciplinaDTO disciplinaDTO) {
-        if(disciplinaDTO != null) {
-            return new Disciplina(disciplinaDTO.getNome());
-        }
-        return null;
-    }*/

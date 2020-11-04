@@ -17,13 +17,3 @@ public interface MentoriaMapper {
     MentoriaDTOResponse convertMentoriaToDTOResponse(Mentoria mentoria);
 
 }
-
-/*    public static MentoriaDTOResponse convertMentoriaToDTOResponse(Mentoria mentoria) {
-        if(mentoria != null) {
-            return new MentoriaDTOResponse(mentoria.getId(),
-                    convertMentorToDTO(mentoria.getMentor()),
-                    convertAlunoToDTO(mentoria.getAluno())
-            );
-        }
-        return null;
-    }*/

@@ -12,10 +12,3 @@ public interface AlunoMapper {
     AlunoDTO convertAlunoToDTO(Aluno aluno);
 
 }
-
-    /*static AlunoDTO convertAlunoToDTO(Aluno aluno) {
-        if(aluno != null) {
-            return new AlunoDTO(aluno.getId(), aluno.getNome(), aluno.getClasse(), aluno.getActive());
-        }
-        return null;
-    }*/

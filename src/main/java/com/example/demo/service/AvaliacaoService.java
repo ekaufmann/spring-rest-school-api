@@ -18,13 +18,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.demo.mapper.AvaliacaoMapper.convertDTOToAvaliacao;
-
 @Service
 public class AvaliacaoService {
 
     @Autowired
     private AvaliacaoRepository avaliacaoRepository;
+
+    @Autowired
+    private AvaliacaoMapper avaliacaoMapper;
 
     @Autowired
     private DisciplinaService disciplinaService;
@@ -38,7 +39,7 @@ public class AvaliacaoService {
     public Optional<List<AvaliacaoDTOResponse>> getAvaliacoes() {
         return Optional.of(avaliacaoRepository.findAll()
                            .parallelStream()
-                           .map(AvaliacaoMapper::convertAvaliacaoToDTOResponse)
+                           .map(avaliacaoMapper::convertAvaliacaoToDTOResponse)
                            .collect(Collectors.toList())
         );
     }
@@ -48,7 +49,7 @@ public class AvaliacaoService {
     }
 
     public Optional<AvaliacaoDTOResponse> getAvaliacao(Long id) {
-        return getAvaliacaoById(id).map(AvaliacaoMapper::convertAvaliacaoToDTOResponse);
+        return getAvaliacaoById(id).map(avaliacaoMapper::convertAvaliacaoToDTOResponse);
     }
 
     @Transactional
@@ -58,11 +59,11 @@ public class AvaliacaoService {
         if(avaliacao.isEmpty()) {
             Optional<Disciplina> disciplina = disciplinaService.getDisciplinaById(avaliacaoDTOCreate.getDisciplinaId());
             if(disciplina.isPresent()) {
-                avaliacao = Optional.of(convertDTOToAvaliacao(avaliacaoDTOCreate, disciplina.get()));
+                avaliacao = Optional.of(avaliacaoMapper.convertDTOToAvaliacao(avaliacaoDTOCreate, disciplina.get()));
                 avaliacao.map(avaliacaoRepository::save);
             }
         }
-        return avaliacao.map(AvaliacaoMapper::convertAvaliacaoToDTOResponse);
+        return avaliacao.map(avaliacaoMapper::convertAvaliacaoToDTOResponse);
     }
 
     private Optional<Avaliacao> getAvaliacaoExistente(AvaliacaoDTOCreate avaliacaoDTOCreate) {
@@ -82,7 +83,7 @@ public class AvaliacaoService {
             avaliacao = makeChanges(avaliacao.get(), avaliacaoModificada);
             avaliacao.map(avaliacaoRepository::save);
         }
-        return avaliacao.map(AvaliacaoMapper::convertAvaliacaoToDTOResponse);
+        return avaliacao.map(avaliacaoMapper::convertAvaliacaoToDTOResponse);
     }
 
     private Optional<Avaliacao> makeChanges(Avaliacao avaliacao, AvaliacaoDTOUpdate avaliacaoModificada) {
