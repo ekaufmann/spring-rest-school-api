@@ -48,7 +48,9 @@ public class Aluno extends Pessoa {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Aluno aluno = (Aluno) o;
-        return classe.equals(aluno.classe) &&
+        return id.equals(aluno.id) &&
+                nome.equals(aluno.nome) &&
+                classe.equals(aluno.classe) &&
                 active.equals(aluno.active) &&
                 Objects.equals(mentorias, aluno.mentorias) &&
                 programa.equals(aluno.programa) &&

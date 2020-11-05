@@ -3,9 +3,10 @@ package com.example.demo;
 import com.example.demo.dto.AlunoDTO;
 import com.example.demo.mapper.AlunoMapper;
 import com.example.demo.model.Aluno;
-import com.example.demo.model.Pessoa;
+import com.example.demo.model.Programa;
 import com.example.demo.repository.AlunoRepository;
 import com.example.demo.service.AlunoService;
+import com.example.demo.service.ProgramaService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -14,8 +15,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +30,9 @@ public class AlunoTest {
     @Mock
     AlunoRepository alunoRepository;
 
+    @Mock
+    ProgramaService programaService;
+
     @InjectMocks
     AlunoService alunoService;
 
@@ -36,8 +40,10 @@ public class AlunoTest {
     AlunoMapper alunoMapper = Mappers.getMapper(AlunoMapper.class);
 
     private Aluno aluno, aluno1, aluno2, aluno3, aluno4;
+    private final AlunoDTO dtoTeste;
     private final List<Aluno> alunosTeste;
     private final Long id;
+    private final Programa programa;
 
     {
         id = 1L;
@@ -49,8 +55,22 @@ public class AlunoTest {
         aluno4 = new Aluno(5L, "aluno4 teste", "classe4 teste");
         aluno4.setActive(false);
         alunosTeste = new ArrayList<>(List.of(aluno, aluno1, aluno2, aluno3, aluno4));
+
+        dtoTeste = new AlunoDTO(1L, "DTO Teste", "DTO Teste", true, null);
+
+        LocalDate dataInicio = LocalDate.of(2020, 10, 18);
+        LocalDate dataFim = LocalDate.of(2021, 4, 18);
+        programa = new Programa(1L, "Insiders", dataInicio, dataFim, null);
     }
 
+    private Boolean compareDTOWithAluno(AlunoDTO dto, Aluno aluno) {
+        return dto.getId().equals(aluno.getId()) &&
+                dto.getNome().equals(aluno.getNome()) &&
+                dto.getClasse().equals(aluno.getClasse()) &&
+                dto.getActive() == aluno.getActive();
+    }
+
+    // FIND ALL
     @Test
     public void deveRetornarListaComTodosOsAlunos() {
         when(alunoRepository.findAll()).thenReturn(alunosTeste);
@@ -69,15 +89,13 @@ public class AlunoTest {
                     for(byte i = 0; i < alunosDTO.size(); i++) {
                         dto = alunosDTO.get(i);
                         aluno = alunosTeste.get(i);
-                        assertEquals(dto.getId(), aluno.getId());
-                        assertEquals(dto.getNome(), aluno.getNome());
-                        assertEquals(dto.getClasse(), aluno.getClasse());
-                        assertEquals(dto.getActive(), aluno.getActive());
+                        assertTrue(compareDTOWithAluno(dto, aluno));
                     }
                 }
         );
     }
 
+    // FIND ALL BY ACTIVE
     @Test
     public void deveRetornarListaDeAlunosDTOPeloStatusActiveFalse() {
         Boolean active = false;
@@ -103,10 +121,7 @@ public class AlunoTest {
                     for (byte i = 0; i < alunosDTO.size(); i++) {
                         dto = alunosDTO.get(i);
                         aluno = alunosFalse.get(i);
-                        assertEquals(dto.getId(), aluno.getId());
-                        assertEquals(dto.getNome(), aluno.getNome());
-                        assertEquals(dto.getClasse(), aluno.getClasse());
-                        assertEquals(dto.getActive(), aluno.getActive());
+                        assertTrue(compareDTOWithAluno(dto, aluno));
                     }
                 }
         );
@@ -137,15 +152,13 @@ public class AlunoTest {
                     for (byte i = 0; i < alunosDTO.size(); i++) {
                         dto = alunosDTO.get(i);
                         aluno = alunosTrue.get(i);
-                        assertEquals(dto.getId(), aluno.getId());
-                        assertEquals(dto.getNome(), aluno.getNome());
-                        assertEquals(dto.getClasse(), aluno.getClasse());
-                        assertEquals(dto.getActive(), aluno.getActive());
+                        assertTrue(compareDTOWithAluno(dto, aluno));
                     }
                 }
         );
     }
 
+    // FIND BY ID
     @Test
     public void deveRetornarAlunoDTOPelaIdInformada() {
         when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
@@ -153,18 +166,15 @@ public class AlunoTest {
         Optional<AlunoDTO> alunoByIndex = this.alunoService.getAluno(id);
 
         assertTrue(alunoByIndex.isPresent());
-
         AlunoDTO alunoDTO = alunoByIndex.get();
 
         assertAll(
                 () -> verify(alunoRepository, times(1)).findById(1L),
-                () -> assertEquals(alunoDTO.getId(), aluno.getId()),
-                () -> assertEquals(alunoDTO.getNome(), aluno.getNome()),
-                () -> assertEquals(alunoDTO.getClasse(), aluno.getClasse()),
-                () -> assertEquals(alunoDTO.getActive(), aluno.getActive())
+                () -> assertTrue(compareDTOWithAluno(alunoDTO, aluno))
         );
     }
 
+    // DELETE
     @Test
     public void deveRetornarAlunoDeletadoLogicamente() {
         when(alunoRepository.logicalDelete(id)).thenReturn(1);
@@ -192,6 +202,7 @@ public class AlunoTest {
         );
     }
 
+    // REACTIVATE
     @Test
     public void deveRetornarAlunoReativadoLogicamente() {
         when(alunoRepository.reativarAluno(id)).thenReturn(1);
@@ -217,5 +228,41 @@ public class AlunoTest {
                 () -> verify(alunoRepository, times(1)).reativarAluno(id),
                 () -> assertTrue(alunoDTO.isEmpty())
         );
+    }
+
+    // CREATE
+    @Test
+    public void deveRetornarAlunoCriado() {
+        when(alunoRepository.findByNome(dtoTeste.getNome())).thenReturn(Optional.empty());
+        Aluno aluno = alunoMapper.convertDTOToAluno(dtoTeste);
+        when(alunoRepository.save(any(Aluno.class))).thenReturn(aluno);
+
+        Optional<AlunoDTO> alunoDTO = alunoService.criaAluno(dtoTeste);
+
+        assertAll(
+                () -> assertTrue(alunoDTO.isPresent()),
+                () -> verify(alunoRepository, times(1)).findByNome(dtoTeste.getNome()),
+                () -> verify(alunoRepository, times(1)).save(any(Aluno.class)),
+                () -> assertTrue(compareDTOWithAluno(alunoDTO.get(), aluno))
+        );
+    }
+
+    @Test
+    public void deveRetornarOptionalEmptySeOAlunoForEncontradoPeloNome() {
+        Optional<Aluno> alunoVazio = Optional.of(alunoMapper.convertDTOToAluno(dtoTeste));
+        when(alunoRepository.findByNome(dtoTeste.getNome())).thenReturn(alunoVazio);
+        Optional<AlunoDTO> dtoVazio = alunoService.criaAluno(dtoTeste);
+
+        assertAll(
+                () -> verify(alunoRepository, times(1)).findByNome(dtoTeste.getNome()),
+                () -> assertTrue(dtoVazio.isEmpty())
+        );
+    }
+
+    @Test
+    public void deveRetornarOptionalEmptySeOAlunoForNulo() {
+        Optional<AlunoDTO> dtoVazio = alunoService.criaAluno(null);
+
+        assertTrue(dtoVazio.isEmpty());
     }
 }
