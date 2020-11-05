@@ -37,8 +37,10 @@ public class AlunoTest {
 
     private Aluno aluno, aluno1, aluno2, aluno3, aluno4;
     private final List<Aluno> alunosTeste;
+    private final Long id;
 
     {
+        id = 1L;
         aluno = new Aluno(1L, "aluno teste", "classe teste");
         aluno1 = new Aluno(2L, "aluno1 teste", "classe1 teste");
         aluno2 = new Aluno(3L, "aluno2 teste", "classe2 teste");
@@ -146,7 +148,6 @@ public class AlunoTest {
 
     @Test
     public void deveRetornarAlunoDTOPelaIdInformada() {
-        var id = 1L;
         when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
 
         Optional<AlunoDTO> alunoByIndex = this.alunoService.getAluno(id);
@@ -164,5 +165,57 @@ public class AlunoTest {
         );
     }
 
+    @Test
+    public void deveRetornarAlunoDeletadoLogicamente() {
+        when(alunoRepository.logicalDelete(id)).thenReturn(1);
+        when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
+        aluno.setActive(false);
+        Optional<AlunoDTO> alunoDTO = alunoService.deleteAluno(id);
 
+        assertAll(
+                () -> verify(alunoRepository, times(1)).logicalDelete(id),
+                () -> verify(alunoRepository, times(1)).findById(id),
+                () -> alunoDTO.ifPresent(a -> assertEquals(false, a.getActive())),
+                () -> assertEquals(alunoDTO.get().getActive(), aluno.getActive())
+        );
+    }
+
+    @Test
+    public void deveRetornarOptionalEmptyQuandoNaoDeletarLogicamente() {
+        when(alunoRepository.logicalDelete(id)).thenReturn(0);
+
+        Optional<AlunoDTO> alunoDTO = alunoService.deleteAluno(id);
+
+        assertAll(
+                () -> verify(alunoRepository, times(1)).logicalDelete(id),
+                () -> assertTrue(alunoDTO.isEmpty())
+        );
+    }
+
+    @Test
+    public void deveRetornarAlunoReativadoLogicamente() {
+        when(alunoRepository.reativarAluno(id)).thenReturn(1);
+        when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
+        aluno.setActive(true);
+        Optional<AlunoDTO> alunoDTO = alunoService.reativarAluno(id);
+
+        assertAll(
+                () -> verify(alunoRepository, times(1)).reativarAluno(id),
+                () -> verify(alunoRepository, times(1)).findById(id),
+                () -> alunoDTO.ifPresent(a -> assertEquals(true, a.getActive())),
+                () -> assertEquals(alunoDTO.get().getActive(), aluno.getActive())
+        );
+    }
+
+    @Test
+    public void deveRetornarOptionalEmptyQuandoNaoReativarLogicamente() {
+        when(alunoRepository.reativarAluno(id)).thenReturn(0);
+
+        Optional<AlunoDTO> alunoDTO = alunoService.reativarAluno(id);
+
+        assertAll(
+                () -> verify(alunoRepository, times(1)).reativarAluno(id),
+                () -> assertTrue(alunoDTO.isEmpty())
+        );
+    }
 }
