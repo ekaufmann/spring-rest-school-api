@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.AlunoDTO;
 import com.example.demo.mapper.AlunoMapper;
 import com.example.demo.model.Aluno;
+import com.example.demo.model.Programa;
 import com.example.demo.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class AlunoService {
 
     @Autowired
     private AlunoMapper alunoMapper;
+
+    @Autowired
+    private ProgramaService programaService;
 
     public Optional<List<AlunoDTO>> getAlunos(Boolean active) {
         List<Aluno> alunos;
@@ -76,6 +80,17 @@ public class AlunoService {
             alunoRepository.save(a);
         });
 
+        return aluno.map(alunoMapper::convertAlunoToDTO);
+    }
+
+    public Optional<AlunoDTO> setPrograma(Long id, Long programaId) {
+        Optional<Programa> programa = programaService.getProgramaById(id);
+        Optional<Aluno> aluno = getAlunoById(id);
+
+        aluno.ifPresent(a -> {
+            programa.ifPresent(a::setPrograma);
+            alunoRepository.save(a);
+        });
         return aluno.map(alunoMapper::convertAlunoToDTO);
     }
 }

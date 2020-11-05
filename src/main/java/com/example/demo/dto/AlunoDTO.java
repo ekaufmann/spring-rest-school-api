@@ -24,6 +24,8 @@ public class AlunoDTO {
 
     private Boolean active;
 
+    private ProgramaDTO programa;
+
     public AlunoDTO(String nome, String classe) {
         this.nome = nome;
         this.classe = classe;

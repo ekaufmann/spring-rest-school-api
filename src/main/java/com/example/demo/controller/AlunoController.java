@@ -68,4 +68,11 @@ public class AlunoController {
                            .map(ResponseEntity::ok)
                            .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PatchMapping("/programa")
+    public ResponseEntity<AlunoDTO> setPrograma(@RequestBody Long id, @RequestBody Long programaId) {
+        return alunoService.setPrograma(id, programaId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

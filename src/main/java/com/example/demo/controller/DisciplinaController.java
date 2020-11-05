@@ -2,12 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.DisciplinaDTO;
 import com.example.demo.dto.DisciplinaDTOResponse;
-import com.example.demo.dto.ProgramaDTO;
-import com.example.demo.dto.ProgramaDTOResponse;
-import com.example.demo.model.Disciplina;
-import com.example.demo.model.Programa;
 import com.example.demo.service.DisciplinaService;
-import com.example.demo.service.ProgramaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
