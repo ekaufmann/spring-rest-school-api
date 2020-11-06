@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.AlunoDTO;
+import com.example.demo.dto.ProgramaDTO;
 import com.example.demo.mapper.AlunoMapper;
 import com.example.demo.model.Aluno;
 import com.example.demo.model.Programa;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,21 +78,31 @@ public class AlunoService {
     public Optional<AlunoDTO> modificaAluno(Long id, AlunoDTO alunoModificado) {
         Optional<Aluno> aluno = getAlunoById(id);
 
+        if(alunoModificado == null) {
+            return Optional.empty();
+        }
+
         aluno.ifPresent(a -> {
             a.setNome(alunoModificado.getNome() == null ? a.getNome() : alunoModificado.getNome());
             a.setClasse(alunoModificado.getClasse() == null ? a.getClasse() : alunoModificado.getClasse());
+            a.setActive(alunoModificado.getActive());
+
+            ProgramaDTO programaDTO = alunoModificado.getPrograma();
+            Long programaId = programaDTO != null ? programaDTO.getId() : null;
+
+            Optional<Programa> programaOpt = programaService.getProgramaById(programaId);
+            a.setPrograma(programaOpt.orElse(null));
             alunoRepository.save(a);
         });
-
         return aluno.map(alunoMapper::convertAlunoToDTO);
     }
 
     public Optional<AlunoDTO> setPrograma(Long id, Long programaId) {
-        Optional<Programa> programa = programaService.getProgramaById(id);
         Optional<Aluno> aluno = getAlunoById(id);
+        Optional<Programa> programa = programaService.getProgramaById(id);
 
         aluno.ifPresent(a -> {
-            programa.ifPresent(a::setPrograma);
+            a.setPrograma(programa.orElse(null));
             alunoRepository.save(a);
         });
         return aluno.map(alunoMapper::convertAlunoToDTO);

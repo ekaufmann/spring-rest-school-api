@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.dto.AlunoDTO;
+import com.example.demo.dto.ProgramaDTO;
 import com.example.demo.mapper.AlunoMapper;
 import com.example.demo.model.Aluno;
 import com.example.demo.model.Programa;
@@ -25,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AlunoTest {
+public class AlunoServiceTest {
 
     @Mock
     AlunoRepository alunoRepository;
@@ -68,6 +69,13 @@ public class AlunoTest {
                 dto.getNome().equals(aluno.getNome()) &&
                 dto.getClasse().equals(aluno.getClasse()) &&
                 dto.getActive() == aluno.getActive();
+    }
+
+    private Boolean compareDTOWithPrograma(ProgramaDTO dto, Programa programa) {
+        return dto.getId().equals(programa.getId()) &&
+                dto.getNome().equals(programa.getNome()) &&
+                dto.getDataInicio().equals(programa.getDataInicio()) &&
+                dto.getDataFim().equals(programa.getDataFim());
     }
 
     // FIND ALL
@@ -163,7 +171,7 @@ public class AlunoTest {
     public void deveRetornarAlunoDTOPelaIdInformada() {
         when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
 
-        Optional<AlunoDTO> alunoByIndex = this.alunoService.getAluno(id);
+        Optional<AlunoDTO> alunoByIndex = alunoService.getAluno(id);
 
         assertTrue(alunoByIndex.isPresent());
         AlunoDTO alunoDTO = alunoByIndex.get();
@@ -174,6 +182,12 @@ public class AlunoTest {
         );
     }
 
+    @Test
+    public void deveRetornarOptionalEmptySeAIdForNula() {
+        Optional<AlunoDTO> alunoByIndex = alunoService.getAluno(null);
+        assertTrue(alunoByIndex.isEmpty());
+    }
+
     // DELETE
     @Test
     public void deveRetornarAlunoDeletadoLogicamente() {
@@ -181,6 +195,7 @@ public class AlunoTest {
         when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
         aluno.setActive(false);
         Optional<AlunoDTO> alunoDTO = alunoService.deleteAluno(id);
+        assertTrue(alunoDTO.isPresent());
 
         assertAll(
                 () -> verify(alunoRepository, times(1)).logicalDelete(id),
@@ -202,6 +217,12 @@ public class AlunoTest {
         );
     }
 
+    @Test
+    public void deveRetornarOptionalEmptyQuandoDeletarLogicamenteIdNulo() {
+        Optional<AlunoDTO> alunoDTO = alunoService.deleteAluno(null);
+        assertTrue(alunoDTO.isEmpty());
+    }
+
     // REACTIVATE
     @Test
     public void deveRetornarAlunoReativadoLogicamente() {
@@ -209,6 +230,7 @@ public class AlunoTest {
         when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
         aluno.setActive(true);
         Optional<AlunoDTO> alunoDTO = alunoService.reativarAluno(id);
+        assertTrue(alunoDTO.isPresent());
 
         assertAll(
                 () -> verify(alunoRepository, times(1)).reativarAluno(id),
@@ -230,6 +252,12 @@ public class AlunoTest {
         );
     }
 
+    @Test
+    public void deveRetornarOptionalEmptyQuandoReativarLogicamenteIdNulo() {
+        Optional<AlunoDTO> alunoDTO = alunoService.reativarAluno(null);
+        assertTrue(alunoDTO.isEmpty());
+    }
+
     // CREATE
     @Test
     public void deveRetornarAlunoCriado() {
@@ -238,9 +266,9 @@ public class AlunoTest {
         when(alunoRepository.save(any(Aluno.class))).thenReturn(aluno);
 
         Optional<AlunoDTO> alunoDTO = alunoService.criaAluno(dtoTeste);
+        assertTrue(alunoDTO.isPresent());
 
         assertAll(
-                () -> assertTrue(alunoDTO.isPresent()),
                 () -> verify(alunoRepository, times(1)).findByNome(dtoTeste.getNome()),
                 () -> verify(alunoRepository, times(1)).save(any(Aluno.class)),
                 () -> assertTrue(compareDTOWithAluno(alunoDTO.get(), aluno))
@@ -262,7 +290,98 @@ public class AlunoTest {
     @Test
     public void deveRetornarOptionalEmptySeOAlunoForNulo() {
         Optional<AlunoDTO> dtoVazio = alunoService.criaAluno(null);
-
         assertTrue(dtoVazio.isEmpty());
+    }
+
+    // UPDATE
+    @Test
+    public void deveRetornarAlunoDTOAoModificarAluno() {
+        when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
+        aluno.setPrograma(programa);
+        when(programaService.getProgramaById(any())).thenReturn(Optional.ofNullable(programa));
+        when(alunoRepository.save(any(Aluno.class))).thenReturn(aluno);
+
+        Optional<AlunoDTO> alunoDTO = alunoService.modificaAluno(id, dtoTeste);
+        assertTrue(alunoDTO.isPresent());
+        ProgramaDTO programaDTO = alunoDTO.get().getPrograma();
+
+        assertAll(
+                () -> verify(alunoRepository, times(1)).findById(id),
+                () -> assertTrue(compareDTOWithAluno(alunoDTO.get(), aluno)),
+                () -> assertEquals(aluno.getPrograma(), programa),
+                () -> assertTrue(compareDTOWithPrograma(programaDTO, programa))
+        );
+    }
+
+    @Test
+    public void deveRetornarAlunoDTOComProgramaNuloAoModificarAluno() {
+        when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
+        aluno.setPrograma(null);
+        //when(programaService.getProgramaById(any())).thenReturn(Optional.empty());
+        when(alunoRepository.save(any(Aluno.class))).thenReturn(aluno);
+
+        Optional<AlunoDTO> alunoDTO = alunoService.modificaAluno(id, dtoTeste);
+        assertTrue(alunoDTO.isPresent());
+        ProgramaDTO programaDTO = alunoDTO.get().getPrograma();
+
+        assertAll(
+                () -> verify(alunoRepository, times(1)).findById(id),
+                () -> assertTrue(compareDTOWithAluno(alunoDTO.get(), aluno)),
+                () -> assertNull(aluno.getPrograma()),
+                () -> assertNull(programaDTO)
+        );
+    }
+
+    @Test
+    public void deveRetornarOptionalEmptySeOAlunoModificadoForNulo() {
+        when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
+        Optional<AlunoDTO> alunoDTO = alunoService.modificaAluno(id, null);
+
+        assertTrue(alunoDTO.isEmpty());
+        verify(alunoRepository, times(1)).findById(id);
+    }
+
+    @Test
+    public void deveRetornarOptionalEmptySeAIdInformadaForNula() {
+        Optional<AlunoDTO> alunoDTO = alunoService.modificaAluno(null, dtoTeste);
+        assertTrue(alunoDTO.isEmpty());
+        verify(alunoRepository, times(1)).findById(any());
+    }
+
+    // SET PROGRAMA
+    @Test
+    public void deveRetornarAlunoDTOAoDefinirProgramaDoAluno() {
+        when(programaService.getProgramaById(id)).thenReturn(Optional.of(programa));
+        when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
+
+        Optional<AlunoDTO> alunoDTO = alunoService.setPrograma(id, id);
+        assertTrue(alunoDTO.isPresent());
+
+        ProgramaDTO programaDTO = alunoDTO.get().getPrograma();
+
+        assertAll(
+                () -> verify(programaService, times(1)).getProgramaById(id),
+                () -> verify(alunoRepository, times(1)).findById(id),
+                () -> assertTrue(compareDTOWithAluno(alunoDTO.get(), aluno)),
+                () -> assertTrue(compareDTOWithPrograma(programaDTO, programa))
+        );
+    }
+
+    @Test
+    public void deveRetornarAlunoDTOComProgramaNulo() {
+        //when(programaService.getProgramaById(id)).thenReturn(Optional.empty());
+        when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
+        aluno.setPrograma(null);
+
+        Optional<AlunoDTO> alunoDTO = alunoService.setPrograma(id, null);
+        assertTrue(alunoDTO.isPresent());
+        ProgramaDTO programaDTO = alunoDTO.get().getPrograma();
+
+        assertAll(
+                () -> verify(programaService, times(1)).getProgramaById(id),
+                () -> verify(alunoRepository, times(1)).findById(id),
+                () -> assertTrue(compareDTOWithAluno(alunoDTO.get(), aluno)),
+                () -> assertNull(programaDTO)
+        );
     }
 }

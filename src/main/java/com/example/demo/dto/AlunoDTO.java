@@ -22,6 +22,7 @@ public class AlunoDTO {
     @NotNull(message = "Classe cannot be null")
     private String classe;
 
+    @NotNull
     private Boolean active;
 
     private ProgramaDTO programa;
@@ -30,10 +31,4 @@ public class AlunoDTO {
         this.nome = nome;
         this.classe = classe;
     }
-/*
-    public AlunoDTO(Long id, String nome, String classe, Boolean active) {
-        this(nome, classe);
-        this.id = id;
-        this.active = active;
-    }*/
 }
