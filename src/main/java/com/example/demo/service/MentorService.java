@@ -21,9 +21,15 @@ public class MentorService {
     @Autowired
     private MentorMapper mentorMapper;
 
-    public Optional<List<MentorDTO>> getMentores() {
-        return Optional.of(
-                mentorRepository.findAll()
+    public Optional<List<MentorDTO>> getMentores(Boolean active) {
+        List<Mentor> mentores;
+
+        if(active != null) {
+            mentores = mentorRepository.findAllByActive(active);
+        } else {
+            mentores = mentorRepository.findAll();
+        }
+        return Optional.of(mentores
                 .parallelStream()
                 .map(mentorMapper::convertMentorToDTO)
                 .collect(Collectors.toList())
@@ -44,12 +50,18 @@ public class MentorService {
 
     @Transactional
     public Optional<MentorDTO> deleteMentor(Long id) {
-        return mentorRepository.logicalDelete(id) != 0 ? getMentor(id) : Optional.empty();
+        if(id != null) {
+            return mentorRepository.logicalDelete(id) != 0 ? getMentor(id) : Optional.empty();
+        }
+        return Optional.empty();
     }
 
     @Transactional
     public Optional<MentorDTO> reativarMentor(Long id) {
-        return mentorRepository.reativarMentor(id) != 0 ? getMentor(id) : Optional.empty();
+        if(id != null) {
+            return mentorRepository.reativarMentor(id) != 0 ? getMentor(id) : Optional.empty();
+        }
+        return Optional.empty();
     }
 
     public Optional<MentorDTO> modificaMentor(Long id, MentorDTO mentorModificado) {

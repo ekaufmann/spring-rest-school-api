@@ -20,8 +20,8 @@ public class MentorController {
     MentorService mentorService;
 
     @GetMapping
-    public ResponseEntity<List<MentorDTO>> getMentores() {
-        Optional<List<MentorDTO>> mentores = mentorService.getMentores();
+    public ResponseEntity<List<MentorDTO>> getMentores(@RequestParam Boolean active) {
+        Optional<List<MentorDTO>> mentores = mentorService.getMentores(active);
         return mentores.map(ResponseEntity::ok)
                        .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -29,8 +29,8 @@ public class MentorController {
     @GetMapping("{id}")
     public ResponseEntity<MentorDTO> getMentorById(@PathVariable Long id) {
         return mentorService.getMentor(id)
-                            .map(ResponseEntity::ok)
-                            .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/reativar")

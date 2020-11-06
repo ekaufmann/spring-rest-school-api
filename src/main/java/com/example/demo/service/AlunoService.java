@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,12 +66,18 @@ public class AlunoService {
 
     @Transactional
     public Optional<AlunoDTO> deleteAluno(Long id) {
-        return alunoRepository.logicalDelete(id) != 0 ? getAluno(id) : Optional.empty();
+        if(id != null) {
+            return alunoRepository.logicalDelete(id) != 0 ? getAluno(id) : Optional.empty();
+        }
+        return Optional.empty();
     }
 
     @Transactional
     public Optional<AlunoDTO> reativarAluno(Long id) {
-        return alunoRepository.reativarAluno(id) != 0 ? getAluno(id) : Optional.empty();
+        if(id != null) {
+            return alunoRepository.reativarAluno(id) != 0 ? getAluno(id) : Optional.empty();
+        }
+        return Optional.empty();
     }
 
     public Optional<AlunoDTO> modificaAluno(Long id, AlunoDTO alunoModificado) {
@@ -85,24 +90,20 @@ public class AlunoService {
         aluno.ifPresent(a -> {
             a.setNome(alunoModificado.getNome() == null ? a.getNome() : alunoModificado.getNome());
             a.setClasse(alunoModificado.getClasse() == null ? a.getClasse() : alunoModificado.getClasse());
-            a.setActive(alunoModificado.getActive());
 
-            ProgramaDTO programaDTO = alunoModificado.getPrograma();
-            Long programaId = programaDTO != null ? programaDTO.getId() : null;
-
-            Optional<Programa> programaOpt = programaService.getProgramaById(programaId);
-            a.setPrograma(programaOpt.orElse(null));
             alunoRepository.save(a);
         });
+
         return aluno.map(alunoMapper::convertAlunoToDTO);
     }
 
     public Optional<AlunoDTO> setPrograma(Long id, Long programaId) {
         Optional<Aluno> aluno = getAlunoById(id);
-        Optional<Programa> programa = programaService.getProgramaById(id);
+        Optional<Programa> programa = programaService.getProgramaById(programaId);
 
         aluno.ifPresent(a -> {
-            a.setPrograma(programa.orElse(null));
+            Programa programaAnterior = a.getPrograma() == null ? null : a.getPrograma();
+            a.setPrograma(programa.orElse(programaAnterior));
             alunoRepository.save(a);
         });
         return aluno.map(alunoMapper::convertAlunoToDTO);
