@@ -263,7 +263,7 @@ public class AlunoServiceTest {
 
     // CREATE
     @Test
-    public void deveRetornarAlunoCriado() {
+    public void deveRetornarAlunoDTOCriado() {
         when(alunoRepository.findByNome(dtoTeste.getNome())).thenReturn(Optional.empty());
         Aluno aluno = alunoMapper.convertDTOToAluno(dtoTeste);
         when(alunoRepository.save(any(Aluno.class))).thenReturn(aluno);

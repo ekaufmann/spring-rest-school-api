@@ -23,7 +23,7 @@ public class MentorController {
     public ResponseEntity<List<MentorDTO>> getMentores(@RequestParam Boolean active) {
         Optional<List<MentorDTO>> mentores = mentorService.getMentores(active);
         return mentores.map(ResponseEntity::ok)
-                       .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("{id}")
@@ -43,24 +43,28 @@ public class MentorController {
     }
 
     @PostMapping
-    public ResponseEntity<MentorDTO> criaMentor(@RequestBody Mentor mentor) {
-        MentorDTO dto = mentorService.criaMentor(mentor);
-        Long id = dto.getId();
-
-        return ResponseEntity.created(URI.create("/mentor/" + id)).body(dto);
+    public ResponseEntity<MentorDTO> criaMentor(@RequestBody MentorDTO mentorDTO) {
+        return mentorService.criaMentor(mentorDTO).map(
+                m -> ResponseEntity.created(URI.create("/mentor/" + m.getId())).body(m)
+        ).orElseGet(
+                () -> {
+                    MentorDTO dtoResponse = new MentorDTO(0L, "Mentor já existe!", false);
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(dtoResponse);
+                }
+        );
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<MentorDTO> deleteMentor(@PathVariable Long id) {
         return mentorService.deleteMentor(id)
-                            .map(ResponseEntity::ok)
-                            .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("{id}")
     public ResponseEntity<MentorDTO> modificaMentor(@PathVariable Long id, @RequestBody MentorDTO mentorModificado) {
         return mentorService.modificaMentor(id, mentorModificado)
-                            .map(ResponseEntity::ok)
-                            .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

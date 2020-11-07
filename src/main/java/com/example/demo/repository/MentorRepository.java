@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MentorRepository extends JpaRepository<Mentor, Long> {
 
@@ -26,4 +27,6 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
             "WHERE mentor.id = ?1 " +
             "   AND aluno.active = 1", nativeQuery = true)
     Integer reativarMentor(Long id);
+
+    Optional<Mentor> findByNome(String nome);
 }

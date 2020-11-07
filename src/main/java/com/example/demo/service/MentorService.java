@@ -44,8 +44,17 @@ public class MentorService {
         return getMentorById(id).map(mentorMapper::convertMentorToDTO);
     }
 
-    public MentorDTO criaMentor(Mentor mentor) {
-        return mentorMapper.convertMentorToDTO(mentorRepository.save(mentor));
+    public Optional<MentorDTO> criaMentor(MentorDTO mentorDTO) {
+        Optional<Mentor> mentor;
+        if(mentorDTO != null) {
+            mentor = mentorRepository.findByNome(mentorDTO.getNome());
+            if(mentor.isPresent()) {
+                return Optional.empty();
+            }
+        }
+        mentor = Optional.ofNullable(mentorMapper.convertDTOToMentor(mentorDTO));
+        mentor.ifPresent(mentorRepository::save);
+        return mentor.map(mentorMapper::convertMentorToDTO);
     }
 
     @Transactional

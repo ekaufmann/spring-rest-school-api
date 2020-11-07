@@ -47,8 +47,9 @@ public class AlunoController {
 
     @PostMapping
     public ResponseEntity<AlunoDTO> criaAluno(@RequestBody @Validated @NotNull AlunoDTO dto) {
-        return alunoService.criaAluno(dto).map(a -> ResponseEntity.created(URI.create("/aluno/" + a.getId())).body(a))
-                .orElseGet( //new ResponseEntity<>((AlunoDTO) null, HttpStatus.FORBIDDEN)
+        return alunoService.criaAluno(dto).map(
+                a -> ResponseEntity.created(URI.create("/aluno/" + a.getId())).body(a)
+        ).orElseGet(
                 () -> {
                     AlunoDTO dtoResponse = new AlunoDTO("Aluno já existe!", "-");
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(dtoResponse);
@@ -58,15 +59,15 @@ public class AlunoController {
     @DeleteMapping("{id}")
     public ResponseEntity<AlunoDTO> deleteAluno(@PathVariable Long id) {
         return alunoService.deleteAluno(id)
-                           .map(ResponseEntity::ok)
-                           .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("{id}")
     public ResponseEntity<AlunoDTO> modificaAluno(@PathVariable Long id, @Validated @NotNull @RequestBody AlunoDTO alunoModificado) {
         return alunoService.modificaAluno(id, alunoModificado)
-                           .map(ResponseEntity::ok)
-                           .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}/programa")

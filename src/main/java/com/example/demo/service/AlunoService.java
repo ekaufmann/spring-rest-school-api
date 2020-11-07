@@ -51,15 +51,15 @@ public class AlunoService {
 
     // TODO Find a better way to validate
     public Optional<AlunoDTO> criaAluno(AlunoDTO alunoDTO) {
+        Optional<Aluno> aluno;
         if(alunoDTO != null) {
-            Optional<Aluno> alunoByNome = alunoRepository.findByNome(alunoDTO.getNome());
+            aluno = alunoRepository.findByNome(alunoDTO.getNome());
 
-            if (alunoByNome.isPresent()) {
+            if (aluno.isPresent()) {
                 return Optional.empty();
             }
         }
-
-        Optional<Aluno> aluno = Optional.ofNullable(alunoMapper.convertDTOToAluno(alunoDTO));
+        aluno = Optional.ofNullable(alunoMapper.convertDTOToAluno(alunoDTO));
         aluno.ifPresent(alunoRepository::save);
         return aluno.map(alunoMapper::convertAlunoToDTO);
     }

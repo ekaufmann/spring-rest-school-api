@@ -15,12 +15,13 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(value = { IllegalArgumentException.class, MissingServletRequestParameterException.class })
     @ResponseBody
     protected ResponseEntity<APIExceptionResponse> illegalArgumentOrMissingParameter(Exception exception, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         APIExceptionResponse body = new APIExceptionResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.name(),
+                status.value(),
+                status.name(),
                 exception.getCause().getMessage(),
                 request.getServletPath()
         );
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(body, status);
     }
 }
