@@ -64,7 +64,7 @@ public class AlunoController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<AlunoDTO> modificaAluno(@PathVariable Long id, @Validated @NotNull @RequestBody AlunoDTO alunoModificado) {
+    public ResponseEntity<AlunoDTO> modificaAluno(@PathVariable Long id, @RequestBody @Validated @NotNull AlunoDTO alunoModificado) {
         return alunoService.modificaAluno(id, alunoModificado)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

@@ -2,13 +2,14 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.MentoriaDTO;
 import com.example.demo.dto.MentoriaDTOResponse;
-import com.example.demo.model.Mentoria;
 import com.example.demo.service.MentoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class MentoriaController {
     }
 
     @PostMapping
-    public ResponseEntity<MentoriaDTOResponse> criaMentoria(@RequestBody MentoriaDTO dto) {
+    public ResponseEntity<MentoriaDTOResponse> criaMentoria(@RequestBody @Validated @NotNull MentoriaDTO dto) {
         return mentoriaService.criaMentoria(dto)
                               .map(m -> ResponseEntity.created(URI.create("/mentoria/" + m.getId())).body(m))
                               .orElseGet(() ->
@@ -48,7 +49,7 @@ public class MentoriaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MentoriaDTOResponse> modificaMentoria(@PathVariable Long id, @RequestBody MentoriaDTO mentoriaModificada) {
+    public ResponseEntity<MentoriaDTOResponse> modificaMentoria(@PathVariable Long id, @RequestBody @Validated @NotNull MentoriaDTO mentoriaModificada) {
         return mentoriaService.modificaMentoria(id, mentoriaModificada)
                               .map(ResponseEntity::ok)
                               .orElseGet(() -> ResponseEntity.notFound().build());
