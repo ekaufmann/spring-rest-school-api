@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Aluno extends Pessoa {
