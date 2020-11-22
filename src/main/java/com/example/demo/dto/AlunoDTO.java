@@ -22,7 +22,7 @@ public class AlunoDTO {
     @NotNull(message = "Classe cannot be null")
     private String classe;
 
-    private Boolean active;
+    private Boolean active = true;
 
     private ProgramaDTO programa;
 
