@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.AlunoDTO;
-import com.example.demo.dto.ProgramaDTO;
 import com.example.demo.mapper.AlunoMapper;
 import com.example.demo.model.Aluno;
 import com.example.demo.model.Programa;
@@ -29,7 +28,7 @@ public class AlunoService {
     public Optional<List<AlunoDTO>> getAlunos(Boolean active) {
         List<Aluno> alunos;
 
-        if(active != null) {
+        if (active != null) {
             alunos = alunoRepository.findAllByActive(active);
         } else {
             alunos = alunoRepository.findAll();
@@ -52,7 +51,7 @@ public class AlunoService {
     // TODO Find a better way to validate
     public Optional<AlunoDTO> criaAluno(AlunoDTO alunoDTO) {
         Optional<Aluno> aluno;
-        if(alunoDTO != null) {
+        if (alunoDTO != null) {
             aluno = alunoRepository.findByNome(alunoDTO.getNome());
 
             if (aluno.isPresent()) {
@@ -66,7 +65,7 @@ public class AlunoService {
 
     @Transactional
     public Optional<AlunoDTO> deleteAluno(Long id) {
-        if(id != null) {
+        if (id != null) {
             return alunoRepository.logicalDelete(id) != 0 ? getAluno(id) : Optional.empty();
         }
         return Optional.empty();
@@ -74,7 +73,7 @@ public class AlunoService {
 
     @Transactional
     public Optional<AlunoDTO> reativarAluno(Long id) {
-        if(id != null) {
+        if (id != null) {
             return alunoRepository.reativarAluno(id) != 0 ? getAluno(id) : Optional.empty();
         }
         return Optional.empty();
@@ -83,7 +82,7 @@ public class AlunoService {
     public Optional<AlunoDTO> modificaAluno(Long id, AlunoDTO alunoModificado) {
         Optional<Aluno> aluno = getAlunoById(id);
 
-        if(alunoModificado == null) {
+        if (alunoModificado == null) {
             return Optional.empty();
         }
 

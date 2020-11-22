@@ -235,27 +235,50 @@ public class MentorServiceTest {
 
     @Test
     public void deveRetornarOptionalEmptySeOMentorForEncontradoPeloNome() {
+        Optional<Mentor> mentorVazio = Optional.of(mentorMapper.convertDTOToMentor(dtoTeste));
+        when(mentorRepository.findByNome(dtoTeste.getNome())).thenReturn(mentorVazio);
+        Optional<MentorDTO> dtoVazio = mentorService.criaMentor(dtoTeste);
 
+        assertAll(
+                () -> verify(mentorRepository, times(1)).findByNome(dtoTeste.getNome()),
+                () -> assertTrue(dtoVazio.isEmpty())
+        );
     }
 
     @Test
     public void deveRetornarOptionalEmptySeOMentorForNulo() {
-
+        Optional<MentorDTO> dtoVazio = mentorService.criaMentor(null);
+        assertTrue(dtoVazio.isEmpty());
     }
 
     // UPDATE
     @Test
     public void deveRetornarMentorDTOAoModificarMentor() {
+        when(mentorRepository.findById(id)).thenReturn(Optional.of(mentor));
+        when(mentorRepository.save(any(Mentor.class))).thenReturn(mentor);
 
+        Optional<MentorDTO> mentorDTO = mentorService.modificaMentor(id, dtoTeste);
+        assertTrue(mentorDTO.isPresent());
+
+        assertAll(
+                () -> verify(mentorRepository, times(1)).findById(id),
+                () -> assertTrue(compareDTOWithMentor(mentorDTO.get(), mentor))
+        );
     }
 
     @Test
     public void deveRetornarOptionalEmptySeOMentorModificadoForNulo() {
+        when(mentorRepository.findById(id)).thenReturn(Optional.of(mentor));
+        Optional<MentorDTO> mentorDTO = mentorService.modificaMentor(id, null);
 
+        assertTrue(mentorDTO.isEmpty());
+        verify(mentorRepository, times(1)).findById(id);
     }
 
     @Test
     public void deveRetornarOptionalEmptySeAIdInformadaForNula() {
-
+        Optional<MentorDTO> mentorDTO = mentorService.modificaMentor(null, dtoTeste);
+        assertTrue(mentorDTO.isEmpty());
+        verify(mentorRepository, times(1)).findById(any());
     }
 }

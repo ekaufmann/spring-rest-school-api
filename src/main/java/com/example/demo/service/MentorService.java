@@ -24,7 +24,7 @@ public class MentorService {
     public Optional<List<MentorDTO>> getMentores(Boolean active) {
         List<Mentor> mentores;
 
-        if(active != null) {
+        if (active != null) {
             mentores = mentorRepository.findAllByActive(active);
         } else {
             mentores = mentorRepository.findAll();
@@ -46,9 +46,9 @@ public class MentorService {
 
     public Optional<MentorDTO> criaMentor(MentorDTO mentorDTO) {
         Optional<Mentor> mentor;
-        if(mentorDTO != null) {
+        if (mentorDTO != null) {
             mentor = mentorRepository.findByNome(mentorDTO.getNome());
-            if(mentor.isPresent()) {
+            if (mentor.isPresent()) {
                 return Optional.empty();
             }
         }
@@ -59,7 +59,7 @@ public class MentorService {
 
     @Transactional
     public Optional<MentorDTO> deleteMentor(Long id) {
-        if(id != null) {
+        if (id != null) {
             return mentorRepository.logicalDelete(id) != 0 ? getMentor(id) : Optional.empty();
         }
         return Optional.empty();
@@ -67,7 +67,7 @@ public class MentorService {
 
     @Transactional
     public Optional<MentorDTO> reativarMentor(Long id) {
-        if(id != null) {
+        if (id != null) {
             return mentorRepository.reativarMentor(id) != 0 ? getMentor(id) : Optional.empty();
         }
         return Optional.empty();
@@ -76,10 +76,14 @@ public class MentorService {
     public Optional<MentorDTO> modificaMentor(Long id, MentorDTO mentorModificado) {
         Optional<Mentor> mentor = getMentorById(id);
 
-        mentor.ifPresent(m -> {
-            m.setNome(mentorModificado.getNome() == null ? m.getNome() : mentorModificado.getNome());
-            mentorRepository.save(m);
-        });
+        if (mentorModificado == null) {
+            return Optional.empty();
+        }
+
+            mentor.ifPresent(m -> {
+                m.setNome(mentorModificado.getNome() == null ? m.getNome() : mentorModificado.getNome());
+                mentorRepository.save(m);
+            });
 
         return mentor.map(mentorMapper::convertMentorToDTO);
     }
