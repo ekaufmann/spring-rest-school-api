@@ -14,7 +14,7 @@ public class AlunoDTO {
 
     private Long id;
 
-    @Size(min = 5, max = 96, message = "Must be between 5 and 96")
+    @Size(min = 5, max = 96, message = "Name must be between 5 and 96 characters")
     @NotNull(message = "Nome cannot be null")
     private String nome;
 
