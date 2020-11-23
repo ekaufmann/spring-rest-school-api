@@ -30,11 +30,16 @@ public class MentoriaService {
     @Autowired
     AlunoService alunoService;
 
-    public List<MentoriaDTOResponse> getMentorias() {
-        List<Mentoria> mentorias = mentoriaRepository.findAll();
-        return mentorias.parallelStream()
+    public Optional<List<MentoriaDTOResponse>> getMentorias(Boolean active) {
+        List<Mentoria> mentorias;
+        if (active != null) {
+            mentorias = mentoriaRepository.findAllByActive(active);
+        } else {
+            mentorias = mentoriaRepository.findAll();
+        }
+        return Optional.of(mentorias.parallelStream()
                 .map(mentoriaMapper::convertMentoriaToDTOResponse)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public Optional<Mentoria> getMentoriaById(Long id) { return mentoriaRepository.findById(id); }

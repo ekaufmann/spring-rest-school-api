@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/mentoria")
@@ -21,8 +22,12 @@ public class MentoriaController {
     MentoriaService mentoriaService;
 
     @GetMapping
-    public ResponseEntity<List<MentoriaDTOResponse>> getMentorias() {
-        return ResponseEntity.ok(mentoriaService.getMentorias());
+    public ResponseEntity<List<MentoriaDTOResponse>> getMentorias(@RequestParam Boolean active) {
+        Optional<List<MentoriaDTOResponse>> mentorias = mentoriaService.getMentorias(active);
+        return mentorias.map(ResponseEntity::ok)
+                .orElseGet(
+                        () -> ResponseEntity.notFound().build()
+                );
     }
 
     @GetMapping("/{id}")
