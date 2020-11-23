@@ -1,19 +1,16 @@
 package com.example.demo.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class MentoriaDTOResponse {
 
     private Long id;
+    private Boolean active;
     private MentorDTO mentor;
     private AlunoDTO aluno;
-
-    public MentoriaDTOResponse(Long id, MentorDTO mentor, AlunoDTO aluno) {
-        this.id = id;
-        this.mentor = mentor;
-        this.aluno = aluno;
-    }
 }
