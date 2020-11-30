@@ -3,6 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.dto.AlunoDTO;
 import com.example.demo.service.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,15 +19,20 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/aluno")
+@RequestMapping("/alunos")
 public class AlunoController {
 
     @Autowired
     private AlunoService alunoService;
 
     @GetMapping
-    public ResponseEntity<List<AlunoDTO>> getAlunos(@RequestParam Boolean active) {
-        Optional<List<AlunoDTO>> alunos = alunoService.getAlunos(active);
+    public ResponseEntity<Page<AlunoDTO>> getAlunos(@RequestParam Boolean active,
+                                                    @RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        System.out.println(pageable);
+
+        Optional<Page<AlunoDTO>> alunos = alunoService.getAlunos(active, pageable);
         return alunos.map(ResponseEntity::ok)
                 .orElseGet(
                         () -> ResponseEntity.notFound().build()

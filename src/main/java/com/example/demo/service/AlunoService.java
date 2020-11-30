@@ -6,6 +6,8 @@ import com.example.demo.model.Aluno;
 import com.example.demo.model.Programa;
 import com.example.demo.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,19 +27,16 @@ public class AlunoService {
     @Autowired
     private ProgramaService programaService;
 
-    public Optional<List<AlunoDTO>> getAlunos(Boolean active) {
-        List<Aluno> alunos;
+    public Optional<Page<AlunoDTO>> getAlunos(Boolean active, Pageable pageable) {
+        Page<Aluno> alunos;
 
         if (active != null) {
-            alunos = alunoRepository.findAllByActive(active);
+            alunos = alunoRepository.findAllByActive(active, pageable);
         } else {
-            alunos = alunoRepository.findAll();
+            alunos = alunoRepository.findAll(pageable);
         }
 
-        return Optional.of(alunos
-                .parallelStream()
-                .map(alunoMapper::convertAlunoToDTO)
-                .collect(Collectors.toList()));
+        return Optional.of(alunos.map(a -> alunoMapper.convertAlunoToDTO(a)));
     }
 
     public Optional<Aluno> getAlunoById(Long id) {

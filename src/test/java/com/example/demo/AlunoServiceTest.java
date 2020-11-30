@@ -15,6 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -81,21 +84,21 @@ public class AlunoServiceTest {
     // FIND ALL
     @Test
     public void deveRetornarListaComTodosOsAlunos() {
-        when(alunoRepository.findAll()).thenReturn(alunosTeste);
-        Optional<List<AlunoDTO>> alunosOpt = alunoService.getAlunos(null);
-        List<AlunoDTO> alunosDTO;
+        when(alunoRepository.findAll(Pageable.unpaged())).thenReturn(new PageImpl<>(alunosTeste));
+        Optional<Page<AlunoDTO>> alunosOpt = alunoService.getAlunos(null, Pageable.unpaged());
+        Page<AlunoDTO> alunosDTO;
 
         assertTrue(alunosOpt.isPresent());
         alunosDTO = alunosOpt.get();
 
         assertAll(
-                () -> verify(alunoRepository, times(1)).findAll(),
-                () -> assertEquals(alunosDTO.size(), alunosTeste.size()),
+                () -> verify(alunoRepository, times(1)).findAll(Pageable.unpaged()),
+                () -> assertEquals(alunosDTO.getTotalElements(), alunosTeste.size()),
                 () -> {
                     AlunoDTO dto;
                     Aluno aluno;
-                    for(byte i = 0; i < alunosDTO.size(); i++) {
-                        dto = alunosDTO.get(i);
+                    for (byte i = 0; i < alunosDTO.getTotalElements(); i++) {
+                        dto = alunosDTO.getContent().get(i);
                         aluno = alunosTeste.get(i);
                         assertTrue(compareDTOWithAluno(dto, aluno));
                     }
@@ -108,27 +111,27 @@ public class AlunoServiceTest {
     public void deveRetornarListaDeAlunosDTOPeloStatusActiveFalse() {
         Boolean active = false;
         List<AlunoDTO> alunosDTO;
-        List<Aluno> alunosFalse = alunosTeste.stream()
+        Page<Aluno> alunosFalse = new PageImpl<>(alunosTeste.stream()
                 .filter(a -> a.getActive() == active)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
 
-        when(alunoRepository.findAllByActive(active)).thenReturn(alunosFalse);
+        when(alunoRepository.findAllByActive(active, Pageable.unpaged())).thenReturn(alunosFalse);
 
-        Optional<List<AlunoDTO>> alunosOpt = alunoService.getAlunos(active);
+        Optional<Page<AlunoDTO>> alunosOpt = alunoService.getAlunos(active, Pageable.unpaged());
 
         assertTrue(alunosOpt.isPresent());
-        alunosDTO = alunosOpt.get();
+        alunosDTO = alunosOpt.get().getContent();
 
         assertAll(
-                () -> verify(alunoRepository, times(1)).findAllByActive(active),
-                () -> assertEquals(alunosFalse.size(), alunosDTO.size()),
+                () -> verify(alunoRepository, times(1)).findAllByActive(active, Pageable.unpaged()),
+                () -> assertEquals(alunosFalse.getTotalElements(), alunosDTO.size()),
                 () -> alunosDTO.forEach(a -> assertFalse(a.getActive())),
                 () -> {
                     AlunoDTO dto;
                     Aluno aluno;
                     for (byte i = 0; i < alunosDTO.size(); i++) {
                         dto = alunosDTO.get(i);
-                        aluno = alunosFalse.get(i);
+                        aluno = alunosFalse.getContent().get(i);
                         assertTrue(compareDTOWithAluno(dto, aluno));
                     }
                 }
@@ -139,27 +142,27 @@ public class AlunoServiceTest {
     public void deveRetornarListaDeAlunosDTOPeloStatusActiveTrue() {
         Boolean active = true;
         List<AlunoDTO> alunosDTO;
-        List<Aluno> alunosTrue = alunosTeste.stream()
-                .filter(a->a.getActive() == active)
-                .collect(Collectors.toList());
+        Page<Aluno> alunosTrue = new PageImpl<>(alunosTeste.stream()
+                .filter(a -> a.getActive() == active)
+                .collect(Collectors.toList()));
 
-        when(alunoRepository.findAllByActive(active)).thenReturn(alunosTrue);
+        when(alunoRepository.findAllByActive(active, Pageable.unpaged())).thenReturn(alunosTrue);
 
-        Optional<List<AlunoDTO>> alunosOpt = alunoService.getAlunos(active);
+        Optional<Page<AlunoDTO>> alunosOpt = alunoService.getAlunos(active, Pageable.unpaged());
 
         assertTrue(alunosOpt.isPresent());
-        alunosDTO = alunosOpt.get();
+        alunosDTO = alunosOpt.get().getContent();
 
         assertAll(
-                () -> verify(alunoRepository, times(1)).findAllByActive(active),
-                () -> assertEquals(alunosTrue.size(), alunosDTO.size()),
+                () -> verify(alunoRepository, times(1)).findAllByActive(active, Pageable.unpaged()),
+                () -> assertEquals(alunosTrue.getTotalElements(), alunosDTO.size()),
                 () -> alunosDTO.forEach(a -> assertTrue(a.getActive())),
                 () -> {
                     AlunoDTO dto;
                     Aluno aluno;
                     for (byte i = 0; i < alunosDTO.size(); i++) {
                         dto = alunosDTO.get(i);
-                        aluno = alunosTrue.get(i);
+                        aluno = alunosTrue.getContent().get(i);
                         assertTrue(compareDTOWithAluno(dto, aluno));
                     }
                 }
