@@ -12,6 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,18 +63,18 @@ public class MentorServiceTest {
     // FIND ALL
     @Test
     public void deveRetornarListaComTodosOsMentores() {
-        when(mentorRepository.findAll()).thenReturn(mentoresTeste);
-        Optional<List<MentorDTO>> mentoresOpt = mentorService.getMentores(null);
+        when(mentorRepository.findAll(Pageable.unpaged())).thenReturn(new PageImpl<>(mentoresTeste));
+        Optional<Page<MentorDTO>> mentoresOpt = mentorService.getMentores(null, Pageable.unpaged());
         assertTrue(mentoresOpt.isPresent());
 
-        List<MentorDTO> mentoresDTO = mentoresOpt.get();
+        Page<MentorDTO> mentoresDTO = mentoresOpt.get();
 
         assertAll(
-                () -> verify(mentorRepository, times(1)).findAll(),
-                () -> assertEquals(mentoresDTO.size(), mentoresTeste.size()),
+                () -> verify(mentorRepository, times(1)).findAll(Pageable.unpaged()),
+                () -> assertEquals(mentoresDTO.getTotalElements(), mentoresTeste.size()),
                 () -> {
-                    for(byte i = 0; i < mentoresDTO.size(); i++) {
-                        assertTrue(compareDTOWithMentor(mentoresDTO.get(i), mentoresTeste.get(i)));
+                    for(byte i = 0; i < mentoresDTO.getTotalElements(); i++) {
+                        assertTrue(compareDTOWithMentor(mentoresDTO.getContent().get(i), mentoresTeste.get(i)));
                     }
                 }
         );
@@ -80,22 +83,23 @@ public class MentorServiceTest {
     @Test
     public void deveRetornarListaDeMentoresDTOPeloStatusActiveFalse() {
         Boolean active = false;
-        List<MentorDTO> mentoresDTO;
-        List<Mentor> mentoresFalse = mentoresTeste.stream()
+        Page<MentorDTO> mentoresDTO;
+        Page<Mentor> mentoresFalse = new PageImpl<>(mentoresTeste.stream()
                 .filter(a -> a.getActive() == active)
-                .collect(Collectors.toList());
-        when(mentorRepository.findAllByActive(active)).thenReturn(mentoresFalse);
-        Optional<List<MentorDTO>> mentoresOpt = mentorService.getMentores(active);
+                .collect(Collectors.toList()));
+
+        when(mentorRepository.findAllByActive(active, Pageable.unpaged())).thenReturn(mentoresFalse);
+        Optional<Page<MentorDTO>> mentoresOpt = mentorService.getMentores(active, Pageable.unpaged());
         assertTrue(mentoresOpt.isPresent());
         mentoresDTO = mentoresOpt.get();
 
         assertAll(
-                () -> verify(mentorRepository, times(1)).findAllByActive(active),
-                () -> assertEquals(mentoresFalse.size(), mentoresDTO.size()),
+                () -> verify(mentorRepository, times(1)).findAllByActive(active, Pageable.unpaged()),
+                () -> assertEquals(mentoresFalse.getTotalElements(), mentoresDTO.getTotalElements()),
                 () -> mentoresDTO.forEach(aluno -> assertFalse(aluno.getActive())),
                 () -> {
-                    for(byte i = 0; i < mentoresDTO.size(); i++) {
-                        assertTrue(compareDTOWithMentor(mentoresDTO.get(i), mentoresFalse.get(i)));
+                    for(byte i = 0; i < mentoresDTO.getTotalElements(); i++) {
+                        assertTrue(compareDTOWithMentor(mentoresDTO.getContent().get(i), mentoresFalse.getContent().get(i)));
                     }
                 }
         );
@@ -104,22 +108,22 @@ public class MentorServiceTest {
     @Test
     public void deveRetornarListaDeMentoresDTOPeloStatusActiveTrue() {
         Boolean active = true;
-        List<MentorDTO> mentoresDTO;
-        List<Mentor> mentoresFalse = mentoresTeste.stream()
+        Page<MentorDTO> mentoresDTO;
+        Page<Mentor> mentoresFalse = new PageImpl<>(mentoresTeste.stream()
                 .filter(a -> a.getActive() == active)
-                .collect(Collectors.toList());
-        when(mentorRepository.findAllByActive(active)).thenReturn(mentoresFalse);
-        Optional<List<MentorDTO>> mentoresOpt = mentorService.getMentores(active);
+                .collect(Collectors.toList()));
+        when(mentorRepository.findAllByActive(active, Pageable.unpaged())).thenReturn(mentoresFalse);
+        Optional<Page<MentorDTO>> mentoresOpt = mentorService.getMentores(active, Pageable.unpaged());
         assertTrue(mentoresOpt.isPresent());
         mentoresDTO = mentoresOpt.get();
 
         assertAll(
-                () -> verify(mentorRepository, times(1)).findAllByActive(active),
-                () -> assertEquals(mentoresFalse.size(), mentoresDTO.size()),
+                () -> verify(mentorRepository, times(1)).findAllByActive(active, Pageable.unpaged()),
+                () -> assertEquals(mentoresFalse.getTotalElements(), mentoresDTO.getTotalElements()),
                 () -> mentoresDTO.forEach(aluno -> assertTrue(aluno.getActive())),
                 () -> {
-                    for(byte i = 0; i < mentoresDTO.size(); i++) {
-                        assertTrue(compareDTOWithMentor(mentoresDTO.get(i), mentoresFalse.get(i)));
+                    for(byte i = 0; i < mentoresDTO.getTotalElements(); i++) {
+                        assertTrue(compareDTOWithMentor(mentoresDTO.getContent().get(i), mentoresFalse.getContent().get(i)));
                     }
                 }
         );

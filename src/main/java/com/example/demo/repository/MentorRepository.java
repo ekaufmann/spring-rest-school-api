@@ -1,6 +1,8 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Mentor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +12,7 @@ import java.util.Optional;
 
 public interface MentorRepository extends JpaRepository<Mentor, Long> {
 
-    List<Mentor> findAllByActive(Boolean active);
+    Page<Mentor> findAllByActive(Boolean active, Pageable pageable);
 
     @Modifying
     @Query(value = "UPDATE mentor " +

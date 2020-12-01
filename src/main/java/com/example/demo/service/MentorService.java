@@ -5,6 +5,8 @@ import com.example.demo.model.Mentor;
 import com.example.demo.repository.MentorRepository;
 import com.example.demo.mapper.MentorMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,18 +23,16 @@ public class MentorService {
     @Autowired
     private MentorMapper mentorMapper;
 
-    public Optional<List<MentorDTO>> getMentores(Boolean active) {
-        List<Mentor> mentores;
+    public Optional<Page<MentorDTO>> getMentores(Boolean active, Pageable pageable) {
+        Page<Mentor> mentores;
 
         if (active != null) {
-            mentores = mentorRepository.findAllByActive(active);
+            mentores = mentorRepository.findAllByActive(active, pageable);
         } else {
-            mentores = mentorRepository.findAll();
+            mentores = mentorRepository.findAll(pageable);
         }
         return Optional.of(mentores
-                .parallelStream()
                 .map(mentorMapper::convertMentorToDTO)
-                .collect(Collectors.toList())
         );
     }
 
