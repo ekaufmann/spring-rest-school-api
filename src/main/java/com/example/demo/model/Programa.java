@@ -28,7 +28,10 @@ public class Programa {
     @Column(name = "dataFim")
     private LocalDate dataFim;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @Column(name = "active")
+    private Boolean active = true;
+
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "programa_disciplina",
                joinColumns = {@JoinColumn(name = "programaId", nullable = false)},
                     inverseJoinColumns = {@JoinColumn(name = "disciplinaId", nullable = false)})

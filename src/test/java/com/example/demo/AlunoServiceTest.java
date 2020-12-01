@@ -64,7 +64,7 @@ public class AlunoServiceTest {
 
         LocalDate dataInicio = LocalDate.of(2020, 10, 18);
         LocalDate dataFim = LocalDate.of(2021, 4, 18);
-        programa = new Programa(1L, "Insiders", dataInicio, dataFim, null);
+        programa = new Programa(1L, "Insiders", dataInicio, dataFim, true, null);
     }
 
     private Boolean compareDTOWithAluno(AlunoDTO dto, Aluno aluno) {

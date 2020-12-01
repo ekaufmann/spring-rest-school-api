@@ -6,7 +6,10 @@ import com.example.demo.model.Disciplina;
 import com.example.demo.model.Programa;
 import com.example.demo.repository.ProgramaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,12 +28,17 @@ public class ProgramaService {
     @Autowired
     private DisciplinaService disciplinaService;
 
-    public Optional<List<ProgramaDTO>> getProgramas() {
-        return Optional.of(
-                programaRepository.findAll()
-                                  .parallelStream()
-                                  .map(programaMapper::convertProgramaToDTO)
-                                  .collect(Collectors.toList()));
+    public Optional<Page<ProgramaDTO>> getProgramas(@RequestParam Boolean active, Pageable pageable) {
+        Page<Programa> programas;
+
+        if (active != null) {
+            programas = programaRepository.findAllByActive(active, pageable);
+        } else {
+            programas = programaRepository.findAll(pageable);
+        }
+
+        return Optional.of(programas
+                .map(programaMapper::convertProgramaToDTO));
     }
 
     public Optional<Programa> getProgramaById(Long id) {

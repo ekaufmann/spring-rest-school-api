@@ -26,5 +26,7 @@ public class ProgramaDTO {
     @NotNull
     private LocalDate dataFim;
 
+    private Boolean active = true;
+
     private Set<DisciplinaDTOResponse> disciplinas;
 }
