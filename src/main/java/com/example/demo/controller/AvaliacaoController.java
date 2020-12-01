@@ -5,6 +5,8 @@ import com.example.demo.dto.AvaliacaoDTOResponse;
 import com.example.demo.dto.AvaliacaoDTOUpdate;
 import com.example.demo.service.AvaliacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,15 +18,15 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/avaliacao")
+@RequestMapping("/avaliacoes")
 public class AvaliacaoController {
 
     @Autowired
     AvaliacaoService avaliacaoService;
 
     @GetMapping
-    public ResponseEntity<List<AvaliacaoDTOResponse>> getAvaliacaos() {
-        Optional<List<AvaliacaoDTOResponse>> avaliacoes = avaliacaoService.getAvaliacoes();
+    public ResponseEntity<Page<AvaliacaoDTOResponse>> getAvaliacaos(@RequestParam Boolean active, Pageable pageable) {
+        Optional<Page<AvaliacaoDTOResponse>> avaliacoes = avaliacaoService.getAvaliacoes(active, pageable);
         return avaliacoes.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

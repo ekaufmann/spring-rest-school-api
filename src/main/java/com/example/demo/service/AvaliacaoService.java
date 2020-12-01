@@ -10,6 +10,8 @@ import com.example.demo.model.Disciplina;
 import com.example.demo.model.Mentor;
 import com.example.demo.repository.AvaliacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,11 +38,16 @@ public class AvaliacaoService {
     @Autowired
     private MentorService mentorService;
 
-    public Optional<List<AvaliacaoDTOResponse>> getAvaliacoes() {
-        return Optional.of(avaliacaoRepository.findAll()
-                           .parallelStream()
-                           .map(avaliacaoMapper::convertAvaliacaoToDTOResponse)
-                           .collect(Collectors.toList())
+    public Optional<Page<AvaliacaoDTOResponse>> getAvaliacoes(Boolean active, Pageable pageable) {
+        Page<Avaliacao> avaliacoes;
+
+        if (active != null) {
+            avaliacoes = avaliacaoRepository.findAllByActive(active, pageable);
+        } else {
+            avaliacoes = avaliacaoRepository.findAll(pageable);
+        }
+        return Optional.of(avaliacoes
+                .map(avaliacaoMapper::convertAvaliacaoToDTOResponse)
         );
     }
 
@@ -56,9 +63,9 @@ public class AvaliacaoService {
     public Optional<AvaliacaoDTOResponse> criaAvaliacao(AvaliacaoDTOCreate avaliacaoDTOCreate) {
         Optional<Avaliacao> avaliacao = getAvaliacaoExistente(avaliacaoDTOCreate);
 
-        if(avaliacao.isEmpty()) {
+        if (avaliacao.isEmpty()) {
             Optional<Disciplina> disciplina = disciplinaService.getDisciplinaById(avaliacaoDTOCreate.getDisciplinaId());
-            if(disciplina.isPresent()) {
+            if (disciplina.isPresent()) {
                 avaliacao = Optional.of(avaliacaoMapper.convertDTOToAvaliacao(avaliacaoDTOCreate, disciplina.get()));
                 avaliacao.map(avaliacaoRepository::save);
             }
@@ -79,7 +86,7 @@ public class AvaliacaoService {
     public Optional<AvaliacaoDTOResponse> modificaAvaliacao(Long id, AvaliacaoDTOUpdate avaliacaoModificada) {
         Optional<Avaliacao> avaliacao = getAvaliacaoById(id);
 
-        if(avaliacao.isPresent()) {
+        if (avaliacao.isPresent()) {
             avaliacao = makeChanges(avaliacao.get(), avaliacaoModificada);
             avaliacao.map(avaliacaoRepository::save);
         }
@@ -88,7 +95,7 @@ public class AvaliacaoService {
 
     private Optional<Avaliacao> makeChanges(Avaliacao avaliacao, AvaliacaoDTOUpdate avaliacaoModificada) {
         Long disciplinaId = avaliacaoModificada.getDisciplinaId();
-        if(disciplinaId != null) {
+        if (disciplinaId != null) {
             Optional<Disciplina> disciplina = disciplinaService.getDisciplinaById(avaliacaoModificada.getDisciplinaId());
             disciplina.ifPresent(avaliacao::setDisciplina);
         }

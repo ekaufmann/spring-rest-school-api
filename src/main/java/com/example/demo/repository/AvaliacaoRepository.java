@@ -1,6 +1,8 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Avaliacao;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +19,6 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
     @Modifying
     @Query("UPDATE Avaliacao SET active = 0 WHERE id = ?1")
     Integer logicalDelete(Long id);
+
+    Page<Avaliacao> findAllByActive(Boolean active, Pageable pageable);
 }
