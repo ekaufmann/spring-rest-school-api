@@ -2,9 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.AlunoDTO;
 import com.example.demo.service.AlunoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +24,7 @@ public class AlunoController {
     private AlunoService alunoService;
 
     @GetMapping
+    @ApiOperation(value = "Returns a page of students based on the given parameters")
     public ResponseEntity<Page<AlunoDTO>> getAlunos(@RequestParam Boolean active, Pageable pageable) {
         Optional<Page<AlunoDTO>> alunos = alunoService.getAlunos(active, pageable);
 
@@ -32,13 +35,23 @@ public class AlunoController {
     }
 
     @GetMapping("{id}")
+    @ApiOperation(value = "Returns a student based on the given id")
     public ResponseEntity<AlunoDTO> getAluno(@PathVariable Long id) {
         Optional<AlunoDTO> dto = alunoService.getAluno(id);
 
         return dto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("{id}")
+    @ApiOperation(value = "Logically delete the student with the given id")
+    public ResponseEntity<AlunoDTO> deleteAluno(@PathVariable Long id) {
+        return alunoService.deleteAluno(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/reativar")
+    @ApiOperation(value = "Logically reactivates the student with the given id")
     public ResponseEntity<AlunoDTO> reativarAluno(@RequestParam Long id) {
         return alunoService.reativarAluno(id)
                 .map(ResponseEntity::ok)
@@ -48,7 +61,8 @@ public class AlunoController {
     }
 
     @PostMapping
-    public ResponseEntity<AlunoDTO> criaAluno(@RequestBody @Validated @NotNull AlunoDTO dto) {
+    @ApiOperation(value = "Creates the student based on the given student DTO")
+    public ResponseEntity<AlunoDTO> createAluno(@RequestBody @Validated @NotNull AlunoDTO dto) {
         return alunoService.criaAluno(dto).map(
                 a -> ResponseEntity.created(URI.create("/aluno/" + a.getId())).body(a)
         ).orElseGet(
@@ -58,21 +72,16 @@ public class AlunoController {
                 });
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<AlunoDTO> deleteAluno(@PathVariable Long id) {
-        return alunoService.deleteAluno(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @PutMapping("{id}")
-    public ResponseEntity<AlunoDTO> modificaAluno(@PathVariable Long id, @RequestBody @Validated @NotNull AlunoDTO alunoModificado) {
+    @ApiOperation(value = "Update the student based on the given modified student")
+    public ResponseEntity<AlunoDTO> updateAluno(@PathVariable Long id, @RequestBody @Validated @NotNull AlunoDTO alunoModificado) {
         return alunoService.modificaAluno(id, alunoModificado)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}/programa")
+    @ApiOperation(value = "Defines the student's program based on the given ids")
     public ResponseEntity<AlunoDTO> setPrograma(@PathVariable Long id, @RequestBody Long programaId) {
         return alunoService.setPrograma(id, programaId)
                 .map(ResponseEntity::ok)
