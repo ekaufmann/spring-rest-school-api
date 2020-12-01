@@ -4,6 +4,8 @@ import com.example.demo.dto.DisciplinaDTO;
 import com.example.demo.dto.DisciplinaDTOResponse;
 import com.example.demo.service.DisciplinaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,15 +15,15 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/disciplina")
+@RequestMapping("/disciplinas")
 public class DisciplinaController {
 
     @Autowired
     private DisciplinaService disciplinaService;
 
     @GetMapping
-    public ResponseEntity<List<DisciplinaDTOResponse>> getDisciplinas(@RequestParam Boolean active) {
-        Optional<List<DisciplinaDTOResponse>> disciplinas = disciplinaService.getDisciplinas(active);
+    public ResponseEntity<Page<DisciplinaDTOResponse>> getDisciplinas(@RequestParam Boolean active, Pageable pageable) {
+        Optional<Page<DisciplinaDTOResponse>> disciplinas = disciplinaService.getDisciplinas(active, pageable);
         return disciplinas.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
