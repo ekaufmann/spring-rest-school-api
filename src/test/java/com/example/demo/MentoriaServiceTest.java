@@ -16,6 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,15 +74,15 @@ public class MentoriaServiceTest {
     // FIND ALL
     @Test
     public void deveRetornarListaComTodasAsMentorias() {
-        when(mentoriaRepository.findAll()).thenReturn(mentoriasTeste);
-        Optional<List<MentoriaDTOResponse>> mentorias = mentoriaService.getMentorias(null);
+        when(mentoriaRepository.findAll(Pageable.unpaged())).thenReturn(new PageImpl<>(mentoriasTeste));
+        Optional<Page<MentoriaDTOResponse>> mentorias = mentoriaService.getMentorias(null, Pageable.unpaged());
         assertTrue(mentorias.isPresent());
 
-        List<MentoriaDTOResponse> mentoriasDTO = mentorias.get();
+        Page<MentoriaDTOResponse> mentoriasDTO = mentorias.get();
 
         assertAll(
-                () -> verify(mentoriaRepository, times(1)).findAll(),
-                () -> assertEquals(mentoriasDTO.size(), mentoriasTeste.size())
+                () -> verify(mentoriaRepository, times(1)).findAll(Pageable.unpaged()),
+                () -> assertEquals(mentoriasDTO.getTotalElements(), mentoriasTeste.size())
 /*                () -> {
                     for(byte i = 0; i < mentoriasDTO.size(); i++) {
                         assertTrue(compareDTOWithMentoria(mentoriasDTO.get(i), mentoriasTeste.get(i)));

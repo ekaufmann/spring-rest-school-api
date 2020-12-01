@@ -4,6 +4,8 @@ import com.example.demo.dto.MentoriaDTO;
 import com.example.demo.dto.MentoriaDTOResponse;
 import com.example.demo.service.MentoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,15 +17,15 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/mentoria")
+@RequestMapping("/mentorias")
 public class MentoriaController {
 
     @Autowired
     MentoriaService mentoriaService;
 
     @GetMapping
-    public ResponseEntity<List<MentoriaDTOResponse>> getMentorias(@RequestParam Boolean active) {
-        Optional<List<MentoriaDTOResponse>> mentorias = mentoriaService.getMentorias(active);
+    public ResponseEntity<Page<MentoriaDTOResponse>> getMentorias(@RequestParam Boolean active, Pageable pageable) {
+        Optional<Page<MentoriaDTOResponse>> mentorias = mentoriaService.getMentorias(active, pageable);
         return mentorias.map(ResponseEntity::ok)
                 .orElseGet(
                         () -> ResponseEntity.notFound().build()

@@ -14,11 +14,11 @@ public class Mentoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "mentorId", nullable = false)
     private Mentor mentor;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "alunoId", nullable = false)
     private Aluno aluno;
 

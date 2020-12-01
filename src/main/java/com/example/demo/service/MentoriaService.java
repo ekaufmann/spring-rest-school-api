@@ -8,12 +8,12 @@ import com.example.demo.model.Mentor;
 import com.example.demo.model.Mentoria;
 import com.example.demo.repository.MentoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class MentoriaService {
@@ -30,16 +30,15 @@ public class MentoriaService {
     @Autowired
     AlunoService alunoService;
 
-    public Optional<List<MentoriaDTOResponse>> getMentorias(Boolean active) {
-        List<Mentoria> mentorias;
+    public Optional<Page<MentoriaDTOResponse>> getMentorias(Boolean active, Pageable pageable) {
+        Page<Mentoria> mentorias;
         if (active != null) {
-            mentorias = mentoriaRepository.findAllByActive(active);
+            mentorias = mentoriaRepository.findAllByActive(active, pageable);
         } else {
-            mentorias = mentoriaRepository.findAll();
+            mentorias = mentoriaRepository.findAll(pageable);
         }
-        return Optional.of(mentorias.parallelStream()
-                .map(mentoriaMapper::convertMentoriaToDTOResponse)
-                .collect(Collectors.toList()));
+        return Optional.of(mentorias
+                .map(mentoriaMapper::convertMentoriaToDTOResponse));
     }
 
     public Optional<Mentoria> getMentoriaById(Long id) { return mentoriaRepository.findById(id); }
