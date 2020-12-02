@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.dto.DisciplinaDTO;
 import com.example.demo.dto.DisciplinaDTOResponse;
 import com.example.demo.service.DisciplinaService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +24,11 @@ public class DisciplinaController {
     private DisciplinaService disciplinaService;
 
     @GetMapping
-    public ResponseEntity<Page<DisciplinaDTOResponse>> getDisciplinas(@RequestParam Boolean active, Pageable pageable) {
+    @ApiOperation(value = "Returns a page of disciplines based on the given parameters")
+    public ResponseEntity<Page<DisciplinaDTOResponse>> getDisciplinas(
+            @ApiParam(value = "")
+            @RequestParam Boolean active,
+            Pageable pageable) {
         Optional<Page<DisciplinaDTOResponse>> disciplinas = disciplinaService.getDisciplinas(active, pageable);
         return disciplinas.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

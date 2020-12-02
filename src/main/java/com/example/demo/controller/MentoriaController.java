@@ -28,7 +28,7 @@ public class MentoriaController {
     MentoriaService mentoriaService;
 
     @GetMapping
-    @ApiOperation(value = "Returns a page of mentorias based on the given parameters")
+    @ApiOperation(value = "Returns a page of mentoring based on the given parameters")
     public ResponseEntity<Page<MentoriaDTOResponse>> getMentorias(
             @ApiParam(value = "Returns active mentoring if equals 1, inactive if equals 0 or all mentoring if null")
             @RequestParam Boolean active,

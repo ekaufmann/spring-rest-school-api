@@ -2,6 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ProgramaDTO;
 import com.example.demo.service.ProgramaService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,21 +27,41 @@ public class ProgramaController {
     private ProgramaService programaService;
 
     @GetMapping
-    public ResponseEntity<Page<ProgramaDTO>> getProgramas(@RequestParam Boolean active, Pageable pageable) {
+    @ApiOperation(value = "Returns a page of programs based on the given parameters")
+    public ResponseEntity<Page<ProgramaDTO>> getProgramas(
+            @ApiParam(value = "Returns active programs if equals 1, inactive if equals 0 or all programs if null")
+            @RequestParam Boolean active, Pageable pageable) {
         Optional<Page<ProgramaDTO>> mentores = programaService.getProgramas(active, pageable);
         return mentores.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ProgramaDTO> getProgramaById(@PathVariable Long id) {
+    @ApiOperation(value = "Returns a program based on the given id")
+    public ResponseEntity<ProgramaDTO> getPrograma(@PathVariable Long id) {
         return programaService.getPrograma(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("{id}")
+    @ApiOperation(value = "Logically delete the program with the given id")
+    public ResponseEntity<ProgramaDTO> deletePrograma(@PathVariable Long id) {
+        return programaService.deletePrograma(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping
-    public ResponseEntity<ProgramaDTO> criaPrograma(@RequestBody @Validated @NotNull ProgramaDTO programaDTO) {
+    @ApiOperation(value = "Create the program based on the given program DTO")
+    @ApiImplicitParams(
+            @ApiImplicitParam(
+                    name = "programaDTO",
+                    paramType = "body",
+                    example = "{\n  'nome': 'string',\n  'dataInicio': 'localDate',\n  'dataFim': 'localDate'\n}"
+            )
+    )
+    public ResponseEntity<ProgramaDTO> createPrograma(@RequestBody @Validated @NotNull ProgramaDTO programaDTO) {
         return programaService.criaPrograma(programaDTO)
                 .map(
                         p -> ResponseEntity.created(URI.create("/mentoria/" + p.getId())).body(p))
@@ -46,22 +70,20 @@ public class ProgramaController {
                 );
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<ProgramaDTO> deletePrograma(@PathVariable Long id) {
-        return programaService.deletePrograma(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @PutMapping("{id}")
-    public ResponseEntity<ProgramaDTO> modificaPrograma(@PathVariable Long id, @RequestBody ProgramaDTO programaModificado) {
+    @ApiOperation(value = "Update the program based on the given modified program")
+    public ResponseEntity<ProgramaDTO> updatePrograma(@PathVariable Long id, @RequestBody ProgramaDTO programaModificado) {
         return programaService.modificaPrograma(id, programaModificado)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/disciplinas")
-    public ResponseEntity<ProgramaDTO> addOrDeleteDisciplina(@RequestBody Long programaId, @RequestBody Long disciplinaId, @RequestBody Boolean active) {
+    @ApiOperation(value = "Add or delete the discipline on/from the program with the given id")
+    public ResponseEntity<ProgramaDTO> addOrDeleteDisciplina(
+            @RequestBody Long programaId,
+            @RequestBody Long disciplinaId,
+            @RequestBody Boolean active) {
         // operacao == 1 ? adiciona ; operacao == 0 ? remove;
         return programaService.addOrDeleteDisciplina(programaId, disciplinaId, active)
                 .map(ResponseEntity::ok)
