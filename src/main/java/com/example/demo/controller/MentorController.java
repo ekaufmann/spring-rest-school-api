@@ -5,6 +5,7 @@ import com.example.demo.service.MentorService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,10 @@ public class MentorController {
 
     @GetMapping
     @ApiOperation(value = "Returns a page of mentors based on the given parameters")
-    public ResponseEntity<Page<MentorDTO>> getMentores(@RequestParam Boolean active, Pageable pageable) {
+    public ResponseEntity<Page<MentorDTO>> getMentores(
+            @ApiParam(value = "Returns active mentors if equals 1, inactive if equals 0 or all mentors if null")
+            @RequestParam Boolean active,
+            Pageable pageable) {
         Optional<Page<MentorDTO>> mentores = mentorService.getMentores(active, pageable);
         return mentores.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -51,7 +55,7 @@ public class MentorController {
 
     @GetMapping("/reativar")
     @ApiOperation(value = "Logically reactivate the mentor with the given id")
-    public ResponseEntity<MentorDTO> reativarMentor(@RequestParam Long id) {
+    public ResponseEntity<MentorDTO> reactivateMentor(@RequestParam Long id) {
         return mentorService.reativarMentor(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(
@@ -68,7 +72,7 @@ public class MentorController {
                     example = "{\n  'name': 'string',\n  'active': '0, 1 or null'\n}"
             )
     )
-    public ResponseEntity<MentorDTO> criaMentor(@RequestBody @Validated @NotNull MentorDTO mentorDTO) {
+    public ResponseEntity<MentorDTO> createMentor(@RequestBody @Validated @NotNull MentorDTO mentorDTO) {
         return mentorService.criaMentor(mentorDTO).map(
                 m -> ResponseEntity.created(URI.create("/mentor/" + m.getId())).body(m)
         ).orElseGet(
@@ -81,7 +85,7 @@ public class MentorController {
 
     @PutMapping("{id}")
     @ApiOperation(value = "Update the mentor based on the given modified mentor")
-    public ResponseEntity<MentorDTO> modificaMentor(@PathVariable Long id, @RequestBody @Validated @NotNull MentorDTO mentorModificado) {
+    public ResponseEntity<MentorDTO> updateMentor(@PathVariable Long id, @RequestBody @Validated @NotNull MentorDTO mentorModificado) {
         return mentorService.modificaMentor(id, mentorModificado)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
