@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.dto.DisciplinaDTO;
 import com.example.demo.dto.DisciplinaDTOResponse;
 import com.example.demo.service.DisciplinaService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,7 @@ public class DisciplinaController {
     @GetMapping
     @ApiOperation(value = "Returns a page of disciplines based on the given parameters")
     public ResponseEntity<Page<DisciplinaDTOResponse>> getDisciplinas(
-            @ApiParam(value = "")
+            @ApiParam(value = "Returns active discipline if equals 1, inactive if equals 0 or all disciplines if null")
             @RequestParam Boolean active,
             Pageable pageable) {
         Optional<Page<DisciplinaDTOResponse>> disciplinas = disciplinaService.getDisciplinas(active, pageable);
@@ -35,14 +37,31 @@ public class DisciplinaController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<DisciplinaDTOResponse> getDisciplinaById(@PathVariable Long id) {
+    @ApiOperation(value = "Returns a discipline based on the given id")
+    public ResponseEntity<DisciplinaDTOResponse> getDisciplina(@PathVariable Long id) {
         return disciplinaService.getDisciplina(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("{id}")
+    @ApiOperation(value = "Logically delete the discipline with the given id")
+    public ResponseEntity<DisciplinaDTOResponse> deleteDisciplina(@PathVariable Long id) {
+        return disciplinaService.deleteDisciplina(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping
-    public ResponseEntity<DisciplinaDTOResponse> criaDisciplina(@RequestBody DisciplinaDTO disciplinaDTO) {
+    @ApiOperation(value = "Creates the discipline based on the given discipline DTO")
+    @ApiImplicitParams(
+            @ApiImplicitParam(
+                    name = "disciplinaDTO",
+                    paramType = "body",
+                    example = "{\n  'nome': 'string'\n}"
+            )
+    )
+    public ResponseEntity<DisciplinaDTOResponse> createDisciplina(@RequestBody DisciplinaDTO disciplinaDTO) {
         return disciplinaService.criaDisciplina(disciplinaDTO)
                 .map(
                         d -> ResponseEntity.created(URI.create("/disciplina/" + d.getId())).body(d)
@@ -51,15 +70,9 @@ public class DisciplinaController {
                 );
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<DisciplinaDTOResponse> deletePrograma(@PathVariable Long id) {
-        return disciplinaService.deleteDisciplina(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @PutMapping("{id}")
-    public ResponseEntity<DisciplinaDTOResponse> modificaDisciplina(@PathVariable Long id, @RequestBody DisciplinaDTO disciplinaModificada) {
+    @ApiOperation(value = "Update the discipline based on the given modified discipline")
+    public ResponseEntity<DisciplinaDTOResponse> updateDisciplina(@PathVariable Long id, @RequestBody DisciplinaDTO disciplinaModificada) {
         return disciplinaService.modificaDisciplinaa(id, disciplinaModificada)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
