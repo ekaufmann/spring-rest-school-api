@@ -2,8 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.AlunoDTO;
 import com.example.demo.service.AlunoService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +24,10 @@ public class AlunoController {
 
     @GetMapping
     @ApiOperation(value = "Returns a page of students based on the given parameters")
-    public ResponseEntity<Page<AlunoDTO>> getAlunos(@RequestParam Boolean active, Pageable pageable) {
+    public ResponseEntity<Page<AlunoDTO>> getAlunos(
+            @ApiParam(value = "Returns active students if equals 1, inactive if equals 0 or all students if null")
+            @RequestParam Boolean active,
+            Pageable pageable) {
         Optional<Page<AlunoDTO>> alunos = alunoService.getAlunos(active, pageable);
 
         return alunos.map(ResponseEntity::ok)
@@ -62,8 +64,14 @@ public class AlunoController {
 
     @PostMapping
     @ApiOperation(value = "Creates the student based on the given student DTO")
-    public ResponseEntity<AlunoDTO> createAluno(@RequestBody @Validated @NotNull AlunoDTO dto) {
-        return alunoService.criaAluno(dto).map(
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "alunoDTO",
+                    paramType = "body",
+                    example = "{\n  'nome': 'string', \n  'classe': 'string', \n  'active': '0 or 1 or null'\n}")
+    })
+    public ResponseEntity<AlunoDTO> createAluno(@RequestBody @Validated @NotNull AlunoDTO alunoDTO) {
+        return alunoService.criaAluno(alunoDTO).map(
                 a -> ResponseEntity.created(URI.create("/aluno/" + a.getId())).body(a)
         ).orElseGet(
                 () -> {

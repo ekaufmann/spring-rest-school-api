@@ -2,6 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.MentorDTO;
 import com.example.demo.service.MentorService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +26,7 @@ public class MentorController {
     MentorService mentorService;
 
     @GetMapping
+    @ApiOperation(value = "Returns a page of mentors based on the given parameters")
     public ResponseEntity<Page<MentorDTO>> getMentores(@RequestParam Boolean active, Pageable pageable) {
         Optional<Page<MentorDTO>> mentores = mentorService.getMentores(active, pageable);
         return mentores.map(ResponseEntity::ok)
@@ -30,13 +34,23 @@ public class MentorController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<MentorDTO> getMentorById(@PathVariable Long id) {
+    @ApiOperation(value = "Returns a mentor based on the given id")
+    public ResponseEntity<MentorDTO> getMentor(@PathVariable Long id) {
         return mentorService.getMentor(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("{id}")
+    @ApiOperation(value = "Logically delete the mentor with the given id")
+    public ResponseEntity<MentorDTO> deleteMentor(@PathVariable Long id) {
+        return mentorService.deleteMentor(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/reativar")
+    @ApiOperation(value = "Logically reactivate the mentor with the given id")
     public ResponseEntity<MentorDTO> reativarMentor(@RequestParam Long id) {
         return mentorService.reativarMentor(id)
                 .map(ResponseEntity::ok)
@@ -46,6 +60,14 @@ public class MentorController {
     }
 
     @PostMapping
+    @ApiOperation(value = "Creates the mentor based on the given mentor DTO")
+    @ApiImplicitParams(
+            @ApiImplicitParam(
+                    name = "mentorDTO",
+                    paramType = "body",
+                    example = "{\n  'name': 'string',\n  'active': '0, 1 or null'\n}"
+            )
+    )
     public ResponseEntity<MentorDTO> criaMentor(@RequestBody @Validated @NotNull MentorDTO mentorDTO) {
         return mentorService.criaMentor(mentorDTO).map(
                 m -> ResponseEntity.created(URI.create("/mentor/" + m.getId())).body(m)
@@ -57,14 +79,8 @@ public class MentorController {
         );
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<MentorDTO> deleteMentor(@PathVariable Long id) {
-        return mentorService.deleteMentor(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @PutMapping("{id}")
+    @ApiOperation(value = "Update the mentor based on the given modified mentor")
     public ResponseEntity<MentorDTO> modificaMentor(@PathVariable Long id, @RequestBody @Validated @NotNull MentorDTO mentorModificado) {
         return mentorService.modificaMentor(id, mentorModificado)
                 .map(ResponseEntity::ok)
