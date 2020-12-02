@@ -53,7 +53,7 @@ public class DisciplinaController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Creates the discipline based on the given discipline DTO")
+    @ApiOperation(value = "Creates a discipline based on the given discipline DTO")
     @ApiImplicitParams(
             @ApiImplicitParam(
                     name = "disciplinaDTO",

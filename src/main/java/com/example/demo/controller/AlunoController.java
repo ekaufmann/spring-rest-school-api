@@ -63,7 +63,7 @@ public class AlunoController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Creates the student based on the given student DTO")
+    @ApiOperation(value = "Creates a student based on the given student DTO")
     @ApiImplicitParams({
             @ApiImplicitParam(
                     name = "alunoDTO",

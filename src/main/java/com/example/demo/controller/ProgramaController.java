@@ -53,7 +53,7 @@ public class ProgramaController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Create the program based on the given program DTO")
+    @ApiOperation(value = "Create a program based on the given program DTO")
     @ApiImplicitParams(
             @ApiImplicitParam(
                     name = "programaDTO",

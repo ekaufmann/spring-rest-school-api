@@ -57,7 +57,7 @@ public class MentoriaController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Create the mentoring based on the given mentoring DTO")
+    @ApiOperation(value = "Create a mentoring based on the given mentoring DTO")
     @ApiImplicitParams(
             @ApiImplicitParam(
                     name = "mentoriaDTO",
